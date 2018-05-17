@@ -10,7 +10,9 @@ export default {
 		isShowFoot: true, //是否显示foot栏
 		isShowBack: true, //是否显示返回按钮
 		isConnectionHub: false, //是否连接hubs
-		locationInfo: {}
+		locationInfo: {},
+		myNoticeItems: [],
+		myTasks: []
 	},
 	mutations: {
 		updateLocationInfo(state, locationInfo){
@@ -32,6 +34,12 @@ export default {
 		},
 		updateConnectionHubStatus(state, isConnectionHub){
 			state.isConnectionHub = isConnectionHub;
+		},
+		updateMyNoticeItems(state, myNoticeItems){
+			state.myNoticeItems = myNoticeItems;
+		},
+		updateMyTasks(state, myTasks){
+			state.myTasks = myTasks;
 		}
 	},
 	actions: {
@@ -46,6 +54,17 @@ export default {
 		},
 		updateConnectionHubStatus({commit}, isConnectionHub){
 			commit("updateConnectionHubStatus", isConnectionHub);
+		},
+		updateMyNoticeItems({commit}, myNoticeItems){
+			commit("updateMyNoticeItems", myNoticeItems);
+		},
+		updateMyTasks({commit}, myTasks){
+			commit("updateMyTasks", myTasks);
 		}
+	},
+	getters: {
+	    noticeLastId: state => {
+	      return state.myNoticeItems[0]?state.myNoticeItems[0].id:0;
+	    }
 	}
 }

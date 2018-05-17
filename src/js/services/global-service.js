@@ -6,7 +6,8 @@
 export default{
 	//判断当前用户信息是否登录
 	isLogin() {
-		if(this.getLoginUserInfo().token){
+        var userInfo = this.getLoginUserInfo();
+		if(userInfo && userInfo.token){
 			return true;
 		}
         return false;
@@ -37,13 +38,21 @@ export default{
     
     //获取用户登录的Token信息
     getLoginUserInfo(){
-    	const [_currentTime, _userInfo] = [(new Date()).getTime(), app.getSiteLocalStorage().userInfo || {}];
-    	if(_userInfo.expiredTime && (_userInfo.expiredTime - _currentTime) > 0) {
-    		return _userInfo;
-    	} else {
-    		app.globalService.setUserInfo({});
-    		return {};
-    	}
+    	// const [_currentTime, _userInfo] = [(new Date()).getTime(), app.getSiteLocalStorage().userInfo || {}];
+    	// if(_userInfo.expiredTime && (_userInfo.expiredTime - _currentTime) > 0) {
+    	// 	return _userInfo;
+    	// } else {
+    	// 	app.globalService.setUserInfo({});
+    	// 	return {};
+    	// }
+
+        // console.log("用户信息", app.getSiteLocalStorage().userInfo);
+        if(app.getSiteLocalStorage().userInfo){
+            return app.getSiteLocalStorage().userInfo;
+        } else{
+            return {};
+        }
+        
     },
     
     //退出登录
@@ -53,17 +62,32 @@ export default{
     
     //设置用户信息
     setUserInfo({tenancyName, token, usernameOrEmailAddress, expiredTime = -1}) {
-    	if(expiredTime > 0) {
-    		const _site_local_storage = app.getSiteLocalStorage();
-			if(_site_local_storage.userInfo == null || typeof(_site_local_storage.userInfo) != "object"){
-				_site_local_storage.userInfo = {};
-			}
-			expiredTime = (new Date()).getTime() + (expiredTime - 60) * 1000;
-			Object.assign(_site_local_storage.userInfo, {tenancyName, token, usernameOrEmailAddress, expiredTime, version: app.Config.innerVersion});
-    		app.utils.localStorage("siteLocalStorage", JSON.stringify(_site_local_storage));
-    	} else {
-    		app.utils.localStorage("siteLocalStorage", "{}");
-    	}
+        if(expiredTime > 0) {
+            const _site_local_storage = app.getSiteLocalStorage();
+            if(_site_local_storage.userInfo == null || typeof(_site_local_storage.userInfo) != "object"){
+                _site_local_storage.userInfo = {};
+            }
+            expiredTime = (new Date()).getTime() + (expiredTime - 60) * 1000;
+            Object.assign(_site_local_storage.userInfo, {tenancyName, token, usernameOrEmailAddress, expiredTime, version: app.Config.innerVersion});
+            app.utils.localStorage("siteLocalStorage", JSON.stringify(_site_local_storage));
+        } else {
+            app.utils.localStorage("siteLocalStorage", "{}");
+        }
+    }, 
+
+    //获取语言
+    getLang() {
+        const _userInfo = app.getSiteLocalStorage().userInfo || {};
+        return _userInfo.lang;
+    },
+    //设置语言
+    setLang(lang) {
+		const _site_local_storage = app.getSiteLocalStorage();
+		if(_site_local_storage.userInfo == null || typeof(_site_local_storage.userInfo) != "object"){
+			_site_local_storage.userInfo = {};
+		}
+		Object.assign(_site_local_storage.userInfo, {"lang": lang});
+		app.utils.localStorage("siteLocalStorage", JSON.stringify(_site_local_storage));
     },
     
     //app更新升级 TODO: 需要根据实际的业务数据调整 by yujinjin

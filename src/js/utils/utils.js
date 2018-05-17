@@ -1,9 +1,5 @@
-/**
- * 作者：yujinjin9@126.com
- * 时间：2017-01-19
- * 描述：站点页面表单验证框架工具类
- */
 export default {
+
 	//日期格式化
 	dateFormat(date, fmt){
 		// TODO: 没有经过测试
@@ -152,5 +148,65 @@ export default {
 				window.localStorage.setItem(key, value);
 			}
 		}
-	}
+	}, 
+	fetch(url, param){
+		app.mui.ajax({
+			type: "post",
+			headers: {
+				'Content-Type':'application/json',
+			},
+			url: url,
+			data: param.data,
+			crossDomain: true,
+			processData: true, //是否自动处理data数据
+            async: true,
+            timeout: 50000,
+            auth: false, //是否验证当前API接口的登录权限
+            authFailCallbackFun: null, // 验证失败的回调函数
+            successFunData: true, //是否验证成功回调函数的数据
+            showLoading: false, //是否显示加载
+            beforeSend: function(xhr){
+            	var _token = app.globalService.getLoginUserInfo().token;
+	        	if(_token){
+	                xhr.setRequestHeader("X-AUTH-TOKEN", _token);
+	            } else{
+            		xhr.abort();
+            		if(typeof param.failed == "function"){
+						param.failed();
+					}
+            	}
+            },
+			success:function(data){
+				if (data) {
+					try{
+						var ret = JSON.parse(data);
+						console.log("data是", ret);
+						if(ret.respCode == 0){
+							if(typeof param.success == "function"){
+								param.success(ret);
+							}
+						} else if(ret.respCode == 1000){
+							if(typeof param.failed == "function"){
+								param.failed(ret.message);
+							}
+						}
+					}catch(e){
+						app.mui.toast("内部错误！");
+						console.error("catch报错", e);
+					}
+				}
+			},
+			error:function(xhr,type,errorThrown){
+				console.error("异常", JSON.stringify(errorThrown, null, 2), type);
+				if(typeof param.error == "function"){
+					param.error();
+				}
+			},
+			complete:function(){
+				if(typeof param.complete == "function"){
+					param.complete();
+				}
+			}
+		});
+	},
 }

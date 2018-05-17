@@ -7,7 +7,7 @@ export default {
 	state: {
 		direction: null,//going：前进|backing后退|replace
 		transition: "next", //fang
-		backConfig: {}//返回指定的路由配置选项{name|appfrom|query|url|callback}
+		backConfig: {},//返回指定的路由配置选项{name|appfrom|query|url|callback}
 	},
 	mutations: {
 		//修改路由的方向
@@ -27,7 +27,7 @@ export default {
 		//重置回路由的配置选项内容
 		resetBackConfig(state){
 			state.backConfig = {};
-		}
+		},
 	},
 	actions: {
 		updateDirection({commit}, direction){
@@ -41,6 +41,6 @@ export default {
 		},
 		resetBackConfig({commit}){
 			commit("resetBackConfig");
-		}
-	}
+		},
+	},
 }

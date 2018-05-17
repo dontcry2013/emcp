@@ -1,4 +1,8 @@
 import babelPolyfill from 'babel-polyfill'
+
+// import './lib/mui.pullToRefresh.js'
+// import './lib/mui.pullToRefresh.material.js'
+
 import mui from "./lib/mui"
 import app from './app'
 import globalService from './services/global-service'
@@ -9,24 +13,36 @@ import directives from "./utils/directives"
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
+import i18n from './utils/i18n'
+
 import routers from "./routers"
 import vueApp from "../views/app"
 import store from "./store/"
 import jQuery from "./lib/jquery-1.12.4"
+import debounce from 'lodash.debounce'
 
-
+console.log("webpack的配置", JSON.stringify(config));
 Object.assign(app.Config, config);
 window.app = Object.assign({}, app, {log, utils, mui, globalService, api});
 //signalR是基于jquery的，所以必须要把jQuery引进来，Jquery仅仅是用于signalR。太恶心了，其实我TM的真的不想这样...
 window.jQuery = window.$ = jQuery;
+window.debounce = window._ = debounce;
+
 const initVue = function(){
 	Vue.use(Vuex);
 	Vue.use(VueRouter);
+
 	Object.keys(directives).forEach((key) => {
 	    Vue.directive(key, directives[key]);
 	});
+	
 	const [router, VueApp] = [routers.createRouter(VueRouter, store), Vue.extend(vueApp)];
-	window.app.vueApp = new VueApp({ router, name: "app", store }).$mount('#app');
+	
+	if(globalService.getLang()){
+		i18n.locale = globalService.getLang();
+	}
+
+	window.app.vueApp = new VueApp({ router, name: "app", store, i18n }).$mount('#app');
 }
 mui.init({
 	swipeBack:false, //关闭右滑关闭功能（默认就是false）
@@ -54,6 +70,19 @@ if(mui.os.plus) {
 		app.Config.version = plus.runtime.version;
 		app.Config.clientVersion = plus.runtime.innerVersion;
 		initVue();
+
+		// 隐藏滚动条
+        plus.webview.currentWebview().setStyle({scrollIndicator:'none'});
+        // Android处理返回键
+        plus.key.addEventListener('backbutton',function(){
+        	console.log("返回键被点击", location.hash)
+            if(location.hash!="#/" || location.hash!="#/users/login"){
+                window.history.go(-1);
+            }else{
+                plus.runtime.quit();
+            }
+        },false);
+
 	});
 } else {
 	mui.ready(function() {

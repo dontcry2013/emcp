@@ -1,54 +1,71 @@
 <template>
 	<div data-page="user-center">
 		<div class="page-content">
-			<div class="banner mui-row">
+			<div class="banner mui-row" @tap.stop.prevent="gotoUserInfo">
 				<div class="mui-col-xs-6">
 		            <div class="mui-table-view-cell head-image-panel">
 		                <img class="head-image" src="../../imgs/test/248.jpg">   
-		                <div class="user-name">金鱼小兔子</div>
+		                <div v-if="profile && profile.length>0" class="user-name">{{ profile[0].realName }}</div>
+		                <div v-else class="user-name">金鱼小兔子</div>
 		            </div>
 		        </div>
 		        <div class="mui-col-xs-6">
-		            <div class="mui-table-view-cell balance-panel" @tap.stop.prevent="gotoUserInfo">
-                		<span class="balance-label">我的账户余额</span>
-                		<span class="balance-amount">300</span>
+		            <div class="mui-table-view-cell balance-panel">
+                		<!-- <span class="balance-label">我的账户余额</span> -->
+                		<!-- <span class="balance-amount">300</span> -->
 		            </div>
 		        </div>
 			</div>
 			<ul class="mui-table-view mui-table-view-chevron">
-				<li class="mui-table-view-cell mui-media">
+<!-- 				<li class="mui-table-view-cell mui-media">
 					<a class="mui-navigate-right item">
 						<span class="mui-icon-extra mui-icon-extra-gold mui-media-object mui-pull-left item-icon my-profit"></span>
 						<div class="item-content">我的收益</div>
 					</a>
-				</li>
+				</li> -->
 				<li class="mui-table-view-cell mui-media" @tap.stop.prevent="gotoMyMessageList">
 					<a class="mui-navigate-right item">
 						<span class="mui-icon mui-icon-email mui-media-object mui-pull-left item-icon message"></span>
-						<div class="item-content">消息中心</div>
+						<div class="item-content">{{ $t("home.messageList") }}</div>
 						<span class="mui-badge mui-badge-danger">4</span>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media" @tap.stop.prevent="changeLanguage">
+					<a class="mui-navigate-right item">
+						<span class="mui-icon mui-icon-info mui-media-object mui-pull-left item-icon message"></span>
+						<div class="item-content">{{ $t("user.langSwitch") }}</div>
 					</a>
 				</li>
 				<li class="mui-table-view-cell mui-media" @tap.stop.prevent="gotoResetPassword">
 					<a class="mui-navigate-right item">
 						<span class="mui-icon mui-icon-locked mui-media-object mui-pull-left item-icon password"></span>
-						<div class="item-content">密码修改</div>
+						<div class="item-content">{{ $t("user.changePsw") }}</div>
 					</a>
 				</li>
 			</ul>
 			<div class="button-panel">
-				<button @tap="logout" type="button" class="mui-btn mui-btn-primary mui-btn-block">退出登录</button>
+				<button @tap="logout" type="button" class="mui-btn mui-btn-primary mui-btn-block">{{ $t("user.logout") }}</button>
 			</div>
 		</div>
 	</div>
 </template>
 <script>
+	import { mapGetters, mapActions } from 'vuex'
+
 	export default {
+		computed:{
+			...mapGetters(['profile']),
+		},
 		data() {
 			return {
 
 			}
 		},
+		created(){
+			if(!this.profile){
+				this.getUserInfo();	
+			}
+	    },
 		methods: {
 			gotoUserInfo(){
 				this.$router.push({name: "userInfo"});
@@ -61,16 +78,20 @@
 			gotoResetPassword(){
 				this.$router.push({name: "resetPassword"});
 			},
-			
+			changeLanguage(){
+				app.vueApp.$i18n.locale = (app.vueApp.$i18n.locale == 'zh' ? 'en' : 'zh');
+				app.globalService.setLang(app.vueApp.$i18n.locale);
+			},
 			logout(){
 				var _this = this;
 				app.mui.confirm("确定要退出登录吗?", "提示", ["取消", "确定"], function(result){
 					if(result.index === 1){
 						app.globalService.logOut();
-						_this.$router.push({name: "login"});
+						_this.$store.dispatch("setLoginState", false);
 					}
 				});
-			}
+			},
+			...mapActions(['getUserInfo']),
 		}
 	}
 </script>
@@ -93,6 +114,7 @@
 		   		padding-top: 25px;
 		   		padding-left: 40px;
 		   		height: 100%;
+		   		text-align: center;
 		   		
 		   		.head-image {
 		   			border:solid 1px #fff;
@@ -103,6 +125,7 @@
 		   		}
 		   		
 		   		.user-name {
+		   			margin: auto;
 		   			color:white;
 		   			line-height: 1; 
 		   			max-width: 90px;

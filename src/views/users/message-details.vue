@@ -1,22 +1,31 @@
 <template>
 	<div data-page="message-details">
 		<div class="page-content">
-			<div class="contents">
-				小时候，总以为感情会是一场执子之手，白头偕老的约定。长大了，才知道每一段旅行的同路人，都只能走一小段，也只有多年之后回头，相视一笑，点点头
+			<div class="contents" v-if="myContent!=undefined">
+				<div v-html="myContent.tfnContent"></div>
 			</div>
-			<div class="ending">
-				2017-02-23 16:20
+			<div class="ending" v-if="myContent!=undefined">
+				{{ myContent.createDate }}
 			</div>
 		</div>
 	</div>
 </template>
 <script>
 export default {
+	computed: {
+		myContent(){
+			console.log(this.$route.params.content);
+
+			return this.$route.params.content;	
+			
+			
+		}
+	},
 	data() {
 		return {};
 	},
 	mounted(){
-		this.$store.dispatch("updateNavbarTitle", "消息标题");
+		this.$store.dispatch("updateNavbarTitle", this.$t('component.messageDetail'));
 	},
 	methods: {
 		
@@ -25,7 +34,8 @@ export default {
 </script>
 <style lang="less" scoped>
 	[data-page='message-details'] {
-		.contents {
+		.contents {    
+			overflow-x: hidden;
 			padding: 20px;
 		}
 		

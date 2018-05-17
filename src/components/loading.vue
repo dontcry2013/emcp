@@ -2,7 +2,7 @@
 <div class="vui-mask" @touchstart.stop.prevent v-show="Show" >
     <div class="block" >
         <span class="vui-loading" :style.sync="loadingEndStyle" :class="{'vui-loading-end':vLoadEndFlag, 'vui-loading-on': show}"></span>
-        <span class="z-word"> 加载中...</span>
+        <span class="z-word"> {{$t('message.loading')}}...</span>
     </div>
 </div>
 </template>
@@ -41,6 +41,9 @@ module.exports = {
             this.vLoadEndFlag = false;
             this.loadingEndStyle = null;
         }
+    },
+    mounted(){
+        this.Show = this.show;
     }
 }
 </script>
@@ -72,7 +75,7 @@ module.exports = {
 .vui-loading{
     display: block;
     width: 45px; height: 45px;
-    background: url("../imgs/load1.png") no-repeat 0 0;
+    background: url("../imgs/loading.gif") no-repeat 0 0;
     background-size: 45px 45px;
     margin: 0 auto 10px;
 }

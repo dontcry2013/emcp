@@ -9,6 +9,12 @@ import Vuex from 'vuex'
 import appData from './app-data'
 import appEvent from './app-event'
 import routerStatus from './router-status'
+import message from "./modules/message"
+import task from "./modules/task"
+import inventory from "./modules/inventory"
+import employee from "./modules/employee"
+import userinfo from "./modules/userinfo"
+import com from "./modules/com"
 
 
 Vue.use(Vuex);
@@ -16,6 +22,6 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     strict: process.env.NODE_ENV !== 'PRD', //在非生产环境下，使用严格模式
     modules: {
-        appData, routerStatus, appEvent
+        appData, routerStatus, appEvent, task, inventory, message, employee, userinfo, com, 
     }
 })

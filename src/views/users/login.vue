@@ -21,16 +21,12 @@
 	        </div>-->
 			<div class="mui-input-group">
 				<div class="mui-input-row">
-					<label>商户编码</label>
-					<input type="text" @focus="focusName=tenancyName" v-focus:tenancyName="focusName" v-model="tenancyName" class="mui-input-clear mui-input" placeholder="请输入商户编码">
+					<label>{{ $t("login.account") }}</label>
+					<input type="text" v-model="usernameOrEmailAddress" class="mui-input-clear mui-input" :placeholder="$t('login.inputAccount')">
 				</div>
 				<div class="mui-input-row">
-					<label>账号</label>
-					<input type="text" @focus="focusName=usernameOrEmailAddress" v-focus:usernameOrEmailAddress="focusName" v-model="usernameOrEmailAddress" class="mui-input-clear mui-input" placeholder="请输入账号">
-				</div>
-				<div class="mui-input-row">
-					<label>密码</label>
-					<input type="password" @focus="focusName=password" v-focus:password="focusName" v-model="password" class="mui-input-clear mui-input" placeholder="请输入密码">
+					<label>{{ $t("login.password") }}</label>
+					<input type="password" v-model="password" class="mui-input-clear mui-input" :placeholder="$t('login.inputPassword')">
 				</div>
 			</div>
 			<!--<form class="mui-input-group">
@@ -44,11 +40,11 @@
 				</ul>
 			</form>-->
 			<div class="mui-content-padded">
-				<button class="mui-btn mui-btn-block mui-btn-primary" data-loading-icon-position="right" @tap.stop.prevent="sumbit($event)">登录</button>
+				<button class="mui-btn mui-btn-block mui-btn-primary" data-loading-icon-position="right" @tap.stop.prevent="sumbit($event)">{{ $t("login.login") }}</button>
 				<div class="link-area">
-					<a>注册账号</a> 
-					<span class="spliter">|</span> 
-					<a>忘记密码</a>
+				<!-- 	<a>{{$t("login.register")}}</a> 
+					<span class="spliter">|</span>  -->
+					<a>{{$t("login.forgetPassword")}}</a>
 				</div>
 			</div>
 			<div class="mui-content-padded oauth-area"></div>
@@ -59,50 +55,113 @@
 export default {
 	data() {
 		return {
-			tenancyName: "default",
-			usernameOrEmailAddress: "admin",
-			password: "123456",
-			focusName: "tenancyName"
+			usernameOrEmailAddress: "",
+			password: "",
 		}
+	},
+	created: function(){
+		console.log("登录创建")
+	   	this.$store.dispatch("setLoginState", false);
 	},
 	methods: {
 		sumbit(e){
 			var _this = this;
-			if(!_this.tenancyName){
-				_this.focusName = "tenancyName";
-				app.mui.toast('请输入商户编码');
-				return;
-			}
 			if(!_this.usernameOrEmailAddress){
-				_this.focusName = "usernameOrEmailAddress";
-				app.mui.toast('请输入账号');
+				app.mui.toast(this.$t('login.inputAccount'));
 				return;
 			}
 			if(!_this.password){
-				_this.focusName = "password";
-				app.mui.toast('请输入密码');
+				app.mui.toast(this.$t('login.inputPassword'));
 				return;
 			}
 			app.mui(e.target).button('loading');
-			app.api.user.login({
+			
+//			app.globalService.setUserInfo({
+//						token: "fdfshdjkfhsjdfhksjkl",
+//									tenancyName: "helloworld", 
+//									usernameOrEmailAddress: "abc@gmail.com", 
+//									expiredTime: "1491709490275"
+//					});
+//			setTimeout(function(){
+//				_this.$router.push({name: "home"});
+//			}, 1000);
+			
+//			app.api.user.login({
+//				data: {
+//					tenancyName: _this.tenancyName,
+//					usernameOrEmailAddress: _this.usernameOrEmailAddress,
+//					password: _this.password
+//				},
+//				success(data){
+//					app.globalService.setUserInfo({
+//						tenancyName: _this.tenancyName, 
+//						token: data.token, 
+//						usernameOrEmailAddress: _this.usernameOrEmailAddress, 
+//						expiredTime: data.expiredTime
+//					});
+//					_this.go();
+//				},
+//				complete(){
+//					app.mui(e.target).button('reset');
+//				}
+//			});
+
+			app.mui.ajax({
+				type: "post",
+				headers: {
+					'Content-Type':'application/json',
+//					"Access-Control-Allow-Origin":  "http://localhost:8080",
+//					"Access-Control-Allow-Methods": "POST",
+//					"Access-Control-Allow-Headers": "Content-Type, Authorization"
+				},
+				url: app.Config.webapiDomain + "rest/tokens",
 				data: {
-					tenancyName: _this.tenancyName,
-					usernameOrEmailAddress: _this.usernameOrEmailAddress,
-					password: _this.password
+					userName: _this.usernameOrEmailAddress,
+					password: _this.password,
+					lang: "en"
 				},
-				success(data){
-					app.globalService.setUserInfo({
-						tenancyName: _this.tenancyName, 
-						token: data.token, 
-						usernameOrEmailAddress: _this.usernameOrEmailAddress, 
-						expiredTime: data.expiredTime
-					});
-					_this.go();
+				crossDomain: true,
+				processData: true, //是否自动处理data数据
+	            async: true,
+	            timeout: 20000,
+	            auth: false, //是否验证当前API接口的登录权限
+	            authFailCallbackFun: null, // 验证失败的回调函数
+	            successFunData: true, //是否验证成功回调函数的数据
+	            showLoading: false, //是否显示加载
+				success:function(data){
+					console.log("网络数据", data);
+					if (data) {
+						try{
+							var ret = JSON.parse(data);		
+							if(ret.respCode == 0){
+								console.log("token是", ret.data);
+
+								_this.$store.dispatch("setLoginState", true);
+								app.globalService.setUserInfo({
+									token: ret.data,
+									usernameOrEmailAddress: _this.usernameOrEmailAddress, 
+									expiredTime: "1491709490275"
+								});
+								_this.go();
+							}
+						}catch(e){
+							app.mui.toast(_this.$t('message.internalError'));
+							console.log("catch报错", JSON.stringify(e));
+						}
+					}
 				},
-				complete(){
+				error:function(xhr,type,errorThrown){
+					console.log("异常", JSON.stringify(errorThrown), type);
+					app.mui.toast(_this.$t('message.internalError'));
+				}, 
+				complete:function(){
 					app.mui(e.target).button('reset');
 				}
 			});
+
+
+
+
 		},
 		
 		go: function(){

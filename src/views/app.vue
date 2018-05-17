@@ -1,5 +1,6 @@
 <template>
 	<div class="view">
+		<myLoading v-bind:show="loadingState" ></myLoading>
 		<header class="mui-bar mui-bar-nav" v-show="$store.state.appData.isShowHead">
 			<!--<h1 class="mui-title">{{$store.state.appData.navbarTitle}}</h1>
 			<button id='setting' class=" mui-pull-right mui-btn-link">设置</button>-->
@@ -33,7 +34,7 @@
 			<div class="mui-col-xs-4 toolbar-icon">
 	            <router-link :to="{name: 'home'}" class="active toolbar-link" exact>
 	            	<span class="mui-icon mui-icon-home"></span>
-	            	首页
+	            	{{ $t("home.frontPage") }}
 	            </router-link>
 	        </div>
 	        <div class="mui-col-xs-4 toolbar-icon">
@@ -45,7 +46,7 @@
 	        <div class="mui-col-xs-4 toolbar-icon">
 	            <router-link :to="{name: 'userCenter'}" class="toolbar-link">
 	            	<span class="mui-icon mui-icon-person"></span>
-	            	个人中心
+	            	{{ $t("home.profile") }}
 	            </router-link>
 	        </div>
 	        <!--<div class="mui-col-xs-3 toolbar-icon">
@@ -62,9 +63,15 @@
 	import '../css/icons-extra.css'
 	import "../less/app.less" //加载公共样式
 	import appRouters from "../js/components/app-routers"
+	import myLoading from '../components/loading.vue'
+	import {mapGetters} from "vuex"
+
 	export default {
 		data: function() {
 			return {};
+		},
+		components:{
+	    	myLoading,
 		},
 		// 在渲染该组件的对应路由被 confirm 前调用
 		// 不！能！获取组件实例 `this`
@@ -72,12 +79,32 @@
 		created() {
 			this.initApp();
 		},
-		
 		mounted(){
+			setTimeout(function(arg){
+				this.$store.dispatch("setLoadingState", arg);
+			}.bind(this), 1000, false);
+		},
+		computed: {
+			...mapGetters(['loadingState', 'loginState']),
+		},
+		watch:{
+			loginState: function(val, oldVal){
+				console.log("loginState改变了", val, oldVal);
+				if(val == false){
+					app.globalService.logOut();
+					this.$router.push({name: "login"});
+				}
+			}
 		},
 		methods: {
 			initApp: function() {
 				var _this = this;
+				var isLogin = app.globalService.isLogin();
+				if(isLogin){
+				   	this.$store.dispatch("setLoginState", true);
+				} else{
+					this.$router.push({name: "login"});
+				}
 				//1.检查更新
 				if(app.Config.isApp) {
 //					app.ajax({
@@ -109,7 +136,7 @@
 				
 				//2.初始化是否启动欢迎页面
 				if(!app.globalService.getStartFlag()){
-					this.$router.push({name: "welcome"});
+//					this.$router.push({name: "welcome"});   //qinz--
 				}
 //				require(["../js/utils/site-utils.js", "../css/test.css"], function(utils){
 //					console.info("app.vue AMD 加载");

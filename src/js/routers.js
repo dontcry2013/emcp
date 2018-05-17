@@ -1,31 +1,33 @@
 import globalService from './services/global-service'
 import appRouters from "./components/app-routers"
+import i18n from './utils/i18n'
 
 export default {
+	
 	routes: [{
 		path: '/', //首页
 		name: "home",
-        meta: { title: "首页" },
+        meta: { title: i18n.getLocaleMessage(i18n.locale).home.frontPage},
 		component: require('../views/home.vue') //resolve => require(['../views/home.vue'], resolve)
 	},{
 		path: '/users/user-center', //用户中心
 		name: "userCenter",
-		meta: { title: "个人中心" },
+		meta: { title: "用户中心" },
 		component: require('../views/users/user-center.vue') 
 	},{
 		path: '/users/my-message-list', //消息中心
 		name: "myMessageList",
-		meta: { title: "消息列表" },
+		meta: { title: i18n.messages[i18n.locale].home.messageList },
 		component: require('../views/users/my-message-list.vue') 
 	},{
-		path: '/users/message-details', //消息中心
+		path: '/users/message-details', //消息详情
 		name: "messageDetails",
-		meta: { title: "消息详情" },
+		// meta: { title: i18n.messages[i18n.locale].component.messageDetail },
 		component: require('../views/users/message-details.vue') 
 	},{
 		path: '/users/user-info', //个人资料
 		name: "userInfo",
-		meta: { title: "个人资料" },
+		meta: { title: i18n.messages[i18n.locale].home.profile },
 		component: require('../views/users/user-info.vue') 
 	},{
 		path: '/users/reset-password', //个人资料
@@ -35,12 +37,12 @@ export default {
 	},{
 		path: '/users/register', //注册
 		name: "register",
-		meta: {auth: false, title: "注册" },
+		meta: {auth: false, title: i18n.messages[i18n.locale].login.register },
 		component: require('../views/users/register.vue') 
 	},{
 		path: '/users/login', //登录
 		name: "login",
-		meta: {auth: false, title: "登录" },
+		meta: {auth: false, title: i18n.messages[i18n.locale].login.login },
 		component: require('../views/users/login.vue') 
 	},{
 		path: '/customerGather/my-customer-gathers',
@@ -50,13 +52,68 @@ export default {
 	},{
 		path: '/barcode', //二维码扫描
 		name: "barcode",
-		meta: {title: "二维码扫描" },
+		meta: {title: i18n.messages[i18n.locale].home.scanQr },
 		component: require('../views/barcode.vue') 
 	},{
-		path: '/users/welcome', //登录
+		path: '/users/welcome', //欢迎
 		name: "welcome",
 		meta: {auth: false, title: "启动欢迎" },
 		component: require('../views/users/welcome.vue') 
+	},{
+		path: '/my/my-notice', //通知
+		name: "myNotice",
+		meta: {title: i18n.messages[i18n.locale].home.taskList },
+		component: require('../views/my/my-notice.vue') 
+	},{
+		path: '/my/my-scan-result', //扫码结果
+		name: "myScanResult",
+		meta: {title: "扫码结果" },
+		component: require('../views/my/my-scan-result.vue') 
+	},{
+		path: '/my/my-upload', //上传页面
+		name: "myUpload",
+		meta: {title: i18n.messages[i18n.locale].home.fileUpload },
+		component: require('../views/my/my-upload.vue') 
+	},{
+		path: '/my/employee-list', //用户列表
+		name: "employeeList",
+		meta: {title: i18n.messages[i18n.locale].home.employeeList },
+		component: require('../views/my/employee-list.vue') 
+	},{
+		path: '/my/employee-details', //用户详情
+		name: "employeeDetails",
+		meta: { title: i18n.messages[i18n.locale].component.employeeDetail },
+		component: require('../views/my/employee-details.vue') 
+	},{
+		path: '/my/my-task-list', //任务列表
+		name: "myTaskList",
+		meta: {title: i18n.messages[i18n.locale].home.taskList },
+		component: require('../views/my/my-task-list.vue')
+	},{
+		path: '/my/my-details', //普通详情
+		name: "myDetails",
+		meta: { title: i18n.messages[i18n.locale].component.taskDetail },
+		component: require('../views/my/my-details.vue')
+	},{
+		path: '/my/my-department', //
+		name: "myDepartment",
+		meta: "组织架构",
+		component: require('../views/my/my-department.vue')
+	},{
+		path: '/my/my-inventory', //
+		name: "myInventory",
+		meta: "库存信息",
+		component: require('../views/my/my-inventory.vue')
+	},{
+		path: '/my/my-inventory-detail', //
+		name: "myInventoryDetail",
+		meta: "库存详情",
+		component: require('../views/my/my-inventory-detail.vue')
+	},{
+		path: '/components/embeded-webview', //
+		name: "webview",
+		meta: "内嵌视图",
+		component: require('../components/embeded-webview.vue')
 	},{
 		path: '*', //未发现该页面
 		name: "notFound",
@@ -80,6 +137,7 @@ export default {
 	createRouter(VueRouter, store){
 		var _this = this;
 		var router = new VueRouter({
+			// mode: "history",
 			//路由列表
 			routes: _this.routes,
 			//使用前端路由，当切换到新路由时，想要页面滚到顶部，或者是保持原先的滚动位置，就像重新加载页面那样。 
@@ -129,10 +187,10 @@ export default {
 		if(JSON.stringify(store.state.routerStatus.backConfig) !== "{}") {
 			store.dispatch("resetBackConfig");
 		}
-		if(to.meta.auth !== false && !globalService.isLogin()){
-			next({name: 'login', query: Object.assign({toName: to.name}, to.query)});
-			return;
-		}
+		// if(to.meta.auth !== false && !globalService.isLogin() ){
+		// 	next({name: 'login', query: Object.assign({toName: to.name}, to.query)});
+		// 	return;
+		// }
 		// 进行管道中的下一个钩子。如果全部钩子执行完了，则导航的状态就是 confirmed （确认的）。
 		// next(false): 中断当前的导航。如果浏览器的 URL 改变了（可能是用户手动或者浏览器后退按钮），那么 URL 地址会重置到 from 路由对应的地址。
 		// next('/') 或者 next({ path: '/' }): 跳转到一个不同的地址。当前的导航被中断，然后进行一个新的导航。
@@ -147,6 +205,10 @@ export default {
 			case 'home':
 				store.dispatch("updateNavbarStatus",{isShowHead: false, isShowBack: false});
 				appRouters.clear();
+				break;
+			case 'webview':
+				store.dispatch("updateNavbarStatus",{isShowHead: false, isShowBack: false, isShowFoot: false});
+				// appRouters.clear();
 				break;
 			case 'userCenter':
 				store.dispatch("updateNavbarStatus",{isShowHead: false, isShowBack: false});
@@ -165,8 +227,8 @@ export default {
 				appRouters.clear();
 				break;
 			case 'barcode':
-				store.dispatch("updateTransition", null);
-				store.dispatch("updateNavbarStatus",{isShowBack: false, isShowHead: false, isShowFoot: false});
+				// store.dispatch("updateTransition", null);
+				store.dispatch("updateNavbarStatus",{isShowBack: true, isShowHead: true, isShowFoot: false});
 				appRouters.clear();
 				break;
 			default:
@@ -185,7 +247,7 @@ export default {
 	afterEach(router, store){
 		if(router.meta.title && router.meta.title != store.state.appData.navbarTitle){
 			store.dispatch("updateNavbarTitle", router.meta.title);
-			document.title = "粉丝煲-" + router.meta.title || "";
+			document.title = "AEMG-" + router.meta.title || "";
 		}
 	}
 }

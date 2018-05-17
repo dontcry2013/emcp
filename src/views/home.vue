@@ -2,52 +2,54 @@
     <div data-page="home">
     	<div class="page-content">
     		<div class="mui-row header">
-    			<div class="mui-col-xs-12 title">
-    				<span>粉丝煲</span>
-    				<span class="mui-icon mui-icon-email"><i class="new"></i></span>
+    			<div class="mui-col-xs-12 title" style="position:relative;">
+    				<div class="my_center">
+    					<span>EMCP</span>	
+    				</div>
+    				<div class="my_right">
+    					<span class="mui-icon mui-icon-email mui-pull-right"><i class="new"></i></span>
+    				</div>
+
     			</div>
 		        <div class="mui-col-xs-6 handle-module">
 	            	<span class="mui-icon-extra mui-icon-extra-sweep" @tap.stop.prevent="scanCode"></span>
-	            	扫码核销
+	            	{{ $t("home.scanQr") }}
 		        </div>
 		        <div class="mui-col-xs-6 handle-module" @tap.stop.prevent="showMemberQrcode(true)">
 	            	<span class="mui-icon mui-icon-camera"></span>
-	            	会员识别
+	            	{{ $t("home.memberQr") }}
 		        </div>
 		    </div>
 		    <div class="mui-table-view mui-grid-view handle-list">
-		    	<div class="mui-table-view-cell mui-col-xs-4">
-		    		<span class="mui-icon-extra mui-icon-extra-order"></span>
-		    		<div class="mui-media-body">我的订单</div>
+		    	<div class="mui-table-view-cell mui-col-xs-4" @tap.stop.prevent="listsNotification">
+		    		<span class="mui-icon mui-icon-email"></span>
+		    		<div class="mui-media-body">{{ $t("home.messageList") }}</div>
 		    	</div>
-		    	<div class="mui-table-view-cell mui-col-xs-4">
+		    	<div class="mui-table-view-cell mui-col-xs-4" @tap.stop.prevent="listsEmployee">
+		    		<span class="mui-icon-extra mui-icon-extra-peoples"></span>
+		    		<div class="mui-media-body">{{ $t("home.employeeList") }}</div>
+		    	</div>
+		    	<div class="mui-table-view-cell mui-col-xs-4" @tap.stop.prevent="listsTask">
+		    		<span class="mui-icon-extra mui-icon-extra-order"></span>
+		    		<div class="mui-media-body">{{ $t("home.taskList") }}</div>
+		    	</div>
+		 <!--    	<div class="mui-table-view-cell mui-col-xs-4">
 		    		<span class="mui-icon mui-icon-chat"></span>
 		    		<div class="mui-media-body">在线客服</div>
-		    	</div>
-		    	<div class="mui-table-view-cell mui-col-xs-4">
+		    	</div> -->
+		    	<div class="mui-table-view-cell mui-col-xs-4" @tap.stop.prevent="listInventory">
 		    		<span class="mui-icon mui-icon-map"></span>
-		    		<div class="mui-media-body">员工小店</div>
+		    		<div class="mui-media-body">{{ $t("home.inventory") }}</div>
 		    	</div>
-		    	<div class="mui-table-view-cell mui-col-xs-4">
+		    	<div class="mui-table-view-cell mui-col-xs-4" @tap.stop.prevent="listDepartment">
 		    		<span class="mui-icon-extra mui-icon-extra-card"></span>
-		    		<div class="mui-media-body">会员服务</div>
+		    		<div class="mui-media-body">{{ $t("home.structure") }}</div>
 		    	</div>
-		    	<div class="mui-table-view-cell mui-col-xs-4">
-		    		<span class="mui-icon-extra mui-icon-extra-trend"></span>
-		    		<div class="mui-media-body">经营数据</div>
-		    	</div>
-		    	<div class="mui-table-view-cell mui-col-xs-4">
-		    		<span class="mui-icon mui-icon-email"></span>
-		    		<div class="mui-media-body">总部消息</div>
-		    	</div>
-		    	<div class="mui-table-view-cell mui-col-xs-4 not-border-bottom">
+		    	<div class="mui-table-view-cell mui-col-xs-4 not-border-bottom" @tap.stop.prevent="uploadFile">
 		    		<span class="mui-icon mui-icon-paperplane"></span>
-		    		<div class="mui-media-body">分销管理</div>
+		    		<div class="mui-media-body">{{ $t("home.fileUpload") }}</div>
 		    	</div>
-		    	<div class="mui-table-view-cell mui-col-xs-4 not-border-bottom">
-		    		<span class="mui-icon-extra mui-icon-extra-peoples"></span>
-		    		<div class="mui-media-body">员工管理</div>
-		    	</div>
+		    	<!-- <myComponent @MyEvent="handleEvent"></myComponent> -->
 		    </div>
 		    <div class="main-footer-pic">
 	    		<img src="../imgs/main-footer-pic.jpg" width="100%" height="110"/>
@@ -58,14 +60,33 @@
 </template>
 <script>
 import memberQrcode from '../components/member-qrcode.vue'
+import myComponent from '../components/my-component.vue'
+ 
 module.exports = {
     data: function(){
         return {
-        	memberQrcodeState: false
+        	memberQrcodeState: false,
         }
     },
-    components: {memberQrcode},
-    created: function(){
+    components: {
+    	memberQrcode, 
+    	myComponent,
+	},
+	watch:{
+		show: function(v, ov){
+			console.log("改变", v, ov);
+		}
+	},
+	created: function(){
+
+	},
+    mounted: function(){
+    	// app.mui.plusReady(function(){
+    	// 	var wt=plus.nativeUI.showWaiting();
+	    // 	setTimeout(function(){
+	    // 		wt.close();
+	    // 	}, 1990);	
+    	// });
     },
     beforeRouteEnter: function(to, from, next) {
 		// 在渲染该组件的对应路由被 confirm 前调用
@@ -76,32 +97,61 @@ module.exports = {
 		return true;
 	},
     methods: {
+    	handleEvent(msg){
+    		console.log("输出", msg);
+    		this.show = true;
+    	},
         //显示二维码
         showMemberQrcode(memberQrcodeState){
-        	this.memberQrcodeState = memberQrcodeState;
+       	 	this.memberQrcodeState = memberQrcodeState;
         },
         //是否显示扫码
         showBarcode(barcodeState){
         	this.barcodeState = barcodeState;
-        },
-        //扫码核销
-        scanCode: function(){
+		},
+		//扫码核销
+		scanCode: function(){
         	if(!app.Config.isApp){
-        		app.mui.toast("只能在app环境中扫码!");
+        		app.mui.toast(this.$t("message.scanEnvError"));
         		return;
         	}
         	this.$store.dispatch("bindBarcodeOnmarkedEvent", this.scanResult);
         	this.$router.push({name: "barcode"});
         },
-        
+        listsEmployee(){
+    		console.log("进入员工页面");
+    		this.$router.push({name: "employeeList"});
+        },
+        listsTask(){
+    		console.log("进入任务页面");
+    		this.$router.push({name: "myTaskList"});
+        },
+        listsNotification(){
+        	console.log("进入通知页面");
+        	this.$router.push({name: "myMessageList"});
+        },
+
+        listDepartment(){
+        	this.$router.push({name: "myDepartment"});
+        },
+
+        listInventory(){
+        	this.$router.push({name: "myInventory"});
+        },
+
         scanResult(type, result){
-        }
+    		console.log("扫码结果", result);
+    		this.$router.push({name: "myScanResult", params: {"scan-result": result}});
+        },
+        uploadFile(type, result){
+    		this.$router.push({name: "myUpload"});
+        },
     },
     beforeRouteLeave: function(to, from, next) {
 		// 导航离开该组件的对应路由时调用
 		// 可以访问组件实例 `this`
 		next();
-	}
+	},
 };
 </script>
 <style lang="less" scoped>
@@ -124,27 +174,37 @@ module.exports = {
 				
 				.title {
 					height: 30px;
-					text-align: center;
-					
-					span {
-						line-height: 30px;
+					position: relative;
+			
+					.my_center{
+						height: 100%;
+						position: absolute;
+						left: 50%;
+						transform: translateX(-50%);
+						span {
+							line-height: 30px;
+						}
 					}
-					
-					.mui-icon-email {
-						float: right;
-					    margin-right: 20px;
-					    position:relative;
-					    
-					    .new {
-					    	display: block;
-						    background: #f00;
-						    border-radius: 50%;
-						    width: 5px;
-						    height: 5px;
-						    top: 8px;
-						    right: 2px;
-						    position: absolute;
-					    }
+
+					.my_right{
+						height: 100%;
+						position: absolute;
+						right: 5px;
+						.mui-icon-email {
+						    position:relative;
+						    top:50%;
+						    transform: translateY(-50%);
+						    .new {
+						    	display: block;
+							    background: #f00;
+							    border-radius: 50%;
+							    width: 5px;
+							    height: 5px;
+							    top: 8px;
+							    right: 2px;
+							    position: absolute;
+						    }
+						}
 					}
 				}
 				
