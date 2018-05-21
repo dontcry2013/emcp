@@ -5,13 +5,46 @@
 				<p class="loading">{{ msg }}</p>
 				<p>{{ $route.params["scan-result"] }}</p>
 			</div>
-			<div>
-				
+
+
+			<div class="mui-scroll" v-f="inventoryScanned">
+				<ul class="mui-table-view mui-table-view-chevron">
+					<li class="mui-table-view-cell mui-media" v-for="(item, index) in inventoryScanned">
+					    <a class="mui-navigate-right">
+							<div class="item-date">{{ item.createDate }}</div>
+							<div class="mui-media-body">
+								<p class="mui-ellipsis">
+									<span>id:</span> {{ item.id }}
+								</p>
+								<p class="mui-ellipsis">
+									<span>tfiNo:</span> {{ item.tfiNo }}
+								</p>
+								<p class="mui-ellipsis">
+									<span>create name:</span> {{ item.tfstore.createName }}
+								</p>
+								<p class="mui-ellipsis">
+									<span>user name:</span> {{ item.tfstore.tfsUsername }}
+								</p>
+								<p class="mui-ellipsis">
+									<span>store address:</span> {{ item.tfstore.tfsStoreaddress }}
+								</p>
+								<p class="mui-ellipsis">
+									<span>store level:</span> {{ item.tfstore.tfsStorelevelname }}
+								</p>
+								<p class="mui-ellipsis">
+									<span>create by:</span> {{ item.tfstore.createBy }}
+								</p>
+							</div>
+							<span v-if="checkIfNew" class="mui-badge mui-badge-danger">新</span>
+						</a>
+					</li>
+				</ul>
 			</div>
 		</div>
 	</div>
 </template>
 <script>
+	import { mapGetters } from 'vuex'
 	module.exports = {
 		data: function(){
 			return {
@@ -19,26 +52,24 @@
 				showMsg: false,
 			}
 		},
-		beforeDestroy: function(){
-		  	this.$store.dispatch("resetBackConfig");
-		},
+		// beforeDestroy: function(){
+		//   	this.$store.dispatch("resetBackConfig");
+		// },
 		created: function(){
 			console.log("任务列表加载", this.$route.params["scan-result"]);
-			console.log($);
 			if(this.$route.params["scan-result"]){
 				this.showMsg = true;
 				this.msg = "扫码结果是:";
-			}
-			/*this.$store.dispatch("updateBackConfig", {
-				callback: function(){
-					console.log("重新定义了回退");
-				}
-			});*/
 
-			
+				this.$store.dispatch('getScanInventory', this.$route.params["scan-result"]);
+
+			}
 			this.$store.dispatch("updateBackConfig", {
 				name: 'home'
 			});
+		},
+		computed: {
+			...mapGetters(['inventoryScanned']),
 		},
 		methods: {
 			

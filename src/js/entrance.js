@@ -70,19 +70,6 @@ if(mui.os.plus) {
 		app.Config.version = plus.runtime.version;
 		app.Config.clientVersion = plus.runtime.innerVersion;
 		initVue();
-
-		// 隐藏滚动条
-        plus.webview.currentWebview().setStyle({scrollIndicator:'none'});
-        // Android处理返回键
-        plus.key.addEventListener('backbutton',function(){
-        	console.log("返回键被点击", location.hash)
-            if(location.hash!="#/" || location.hash!="#/users/login"){
-                window.history.go(-1);
-            }else{
-                plus.runtime.quit();
-            }
-        },false);
-
 	});
 } else {
 	mui.ready(function() {

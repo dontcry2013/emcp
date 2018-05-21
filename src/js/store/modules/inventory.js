@@ -5,6 +5,7 @@ const state = {
 		limit: 10
 	},
 	inventoryLastIndex: null,
+	inventoryScanned: null,
 }
 
 const actions = {
@@ -72,6 +73,33 @@ const actions = {
 		app.utils.fetch(app.Config.webapiDomain + "rest/tFInventoryController/", param)
 	},
 
+	getScanInventory({commit, state}, tfiNo){
+		var param = {
+			data:{
+				"from": "0", 
+				"to": "100",
+				"tfiNo": tfiNo,
+			},
+			success:function(ret){
+	    		if(ret.data && ret.data.length > 0){
+	    			commit("set_inventory_scanned", ret.data);
+	    		}
+			},
+			failed:function(msg){
+				app.mui.toast(msg);
+				commit("com_login_status", false);
+			},
+			error:function(msg){
+				app.mui.toast(msg);
+			},
+			complete:function(){
+				commit("com_loading_status", false);
+			}
+		};
+
+		app.utils.fetch(app.Config.webapiDomain + "rest/tFInventoryController/", param)
+	},
+
 	updateInventoryLastIndex({commit, state}, idx){
 		commit("set_inventory_last_index", idx);
 	},
@@ -80,6 +108,7 @@ const actions = {
 const getters = {
 	inventoryList: state => state.inventoryList,
 	inventoryLastIndex: state => state.inventoryLastIndex,
+	inventoryScanned: state => state.inventoryScanned,
 }
 
 const mutations = {
@@ -91,6 +120,9 @@ const mutations = {
 	},
 	set_inventory_last_index(state, last){
 		state.inventoryLastIndex = last;
+	},
+	set_inventory_scanned(state, data){
+		state.inventoryScanned = data;
 	}
 }
 

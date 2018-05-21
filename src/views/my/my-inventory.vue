@@ -8,7 +8,8 @@
 						<div class="mui-media-body">
 							<p class="mui-ellipsis">
 								<span>id:</span> {{ item.id }}
-							</p><p class="mui-ellipsis">
+							</p>
+							<p class="mui-ellipsis">
 								<span>create name:</span> {{ item.tfstore.createName }}
 							</p>
 							<p class="mui-ellipsis">
@@ -85,10 +86,10 @@ export default {
 		},
 
 		gotoDetails(idx){
-			if(typeof idx === "number"){
+			// if(typeof idx === "number"){
 				this.$store.dispatch('updateInventoryLastIndex', idx)
 				this.$router.push({name: "myInventoryDetail", params: { content: this.inventoryList[idx] }});
-			}
+			// }
 		}, 
 
 	}

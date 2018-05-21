@@ -44,21 +44,20 @@ import { mapGetters } from 'vuex'
 export default {
 	computed: {
 		...mapGetters(['inventoryList', 'inventoryLastIndex']),
-		myContent(){
-			console.log(this.inventoryLastIndex);
-			if(this.$route.params.content){
-				return this.$route.params.content;
-			} else if(this.inventoryLastIndex){
-				return this.inventoryList[this.inventoryLastIndex];
-			}
-			
-		},
 	},
 	data() {
-		return {};
+		return {
+			myContent: null,
+		};
 	},
 	mounted(){
 		this.$store.dispatch("updateNavbarTitle", this.$t('component.inventoryDetail'));
+		if(this.$route.params.content){
+			this.myContent = this.$route.params.content;
+		} else if(typeof this.inventoryLastIndex == 'number' && this.inventoryLastIndex >= 0){
+			this.myContent = this.inventoryList[this.inventoryLastIndex];
+		}			
+
 	},
 	methods: {
 		uploadImg(){

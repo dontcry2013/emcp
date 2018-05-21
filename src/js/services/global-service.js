@@ -61,18 +61,13 @@ export default{
     },
     
     //设置用户信息
-    setUserInfo({tenancyName, token, usernameOrEmailAddress, expiredTime = -1}) {
-        if(expiredTime > 0) {
-            const _site_local_storage = app.getSiteLocalStorage();
-            if(_site_local_storage.userInfo == null || typeof(_site_local_storage.userInfo) != "object"){
-                _site_local_storage.userInfo = {};
-            }
-            expiredTime = (new Date()).getTime() + (expiredTime - 60) * 1000;
-            Object.assign(_site_local_storage.userInfo, {tenancyName, token, usernameOrEmailAddress, expiredTime, version: app.Config.innerVersion});
-            app.utils.localStorage("siteLocalStorage", JSON.stringify(_site_local_storage));
-        } else {
-            app.utils.localStorage("siteLocalStorage", "{}");
+    setUserInfo({token, usernameOrEmailAddress}) {
+        const _site_local_storage = app.getSiteLocalStorage();
+        if(_site_local_storage.userInfo == null || typeof(_site_local_storage.userInfo) != "object"){
+            _site_local_storage.userInfo = {};
         }
+        Object.assign(_site_local_storage.userInfo, {token, usernameOrEmailAddress, version: app.Config.innerVersion});
+        app.utils.localStorage("siteLocalStorage", JSON.stringify(_site_local_storage));
     }, 
 
     //获取语言

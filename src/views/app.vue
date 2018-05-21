@@ -65,7 +65,7 @@
 	import appRouters from "../js/components/app-routers"
 	import myLoading from '../components/loading.vue'
 	import {mapGetters} from "vuex"
-
+	var ws = null;
 	export default {
 		data: function() {
 			return {};
@@ -98,6 +98,9 @@
 		},
 		methods: {
 			initApp: function() {
+				// var siteInfo = app.getSiteLocalStorage();
+				// app.mui.toast(JSON.stringify(siteInfo));
+
 				var _this = this;
 				var isLogin = app.globalService.isLogin();
 				if(isLogin){
@@ -105,6 +108,27 @@
 				} else{
 					this.$router.push({name: "login"});
 				}
+
+				if(app.Config.isApp){
+					ws=plus.webview.currentWebview();
+					ws.setStyle({scrollIndicator:'none'});
+					plus.key.addEventListener('backbutton',function(){
+			        	console.log("返回键被点击", location.hash)
+			        	// app.mui.toast(location.hash);
+			            if(location.hash=="#/" || location.hash=="#/users/login"){
+			            	// plus.runtime.quit();
+			            	ws && ws.close();
+			            	
+			            }else{
+			                // window.history.go(-1);
+			                this.goBack()
+			            }
+			        }, false);	
+
+				}
+
+				
+
 				//1.检查更新
 				if(app.Config.isApp) {
 //					app.ajax({
