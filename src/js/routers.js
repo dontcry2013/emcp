@@ -7,67 +7,67 @@ export default {
 	routes: [{
 		path: '/', //首页
 		name: "home",
-        meta: { title: i18n.getLocaleMessage(i18n.locale).home.frontPage},
+        meta: {title: i18n.getLocaleMessage(i18n.locale).home.frontPage, level: 0},
 		component: require('../views/home.vue') //resolve => require(['../views/home.vue'], resolve)
 	},{
 		path: '/users/user-center', //用户中心
 		name: "userCenter",
-		meta: { title: "用户中心" },
+		meta: {title: "用户中心", level: 1},
 		component: require('../views/users/user-center.vue') 
 	},{
 		path: '/users/my-message-list', //消息中心
 		name: "myMessageList",
-		meta: { title: i18n.messages[i18n.locale].home.messageList },
+		meta: {title: i18n.messages[i18n.locale].home.messageList, level: 1},
 		component: require('../views/users/my-message-list.vue') 
 	},{
 		path: '/users/message-details', //消息详情
 		name: "messageDetails",
-		// meta: { title: i18n.messages[i18n.locale].component.messageDetail },
+		meta: {title: i18n.messages[i18n.locale].component.messageDetail, level: 2},
 		component: require('../views/users/message-details.vue') 
 	},{
 		path: '/users/user-info', //个人资料
 		name: "userInfo",
-		meta: { title: i18n.messages[i18n.locale].home.profile },
+		meta: {title: i18n.messages[i18n.locale].home.profile, level: 1},
 		component: require('../views/users/user-info.vue') 
 	},{
 		path: '/users/reset-password', //个人资料
 		name: "resetPassword",
-		meta: { title: "重设密码" },
+		meta: {title: "重设密码", level: 2},
 		component: require('../views/users/reset-password.vue') 
 	},{
 		path: '/users/register', //注册
 		name: "register",
-		meta: {auth: false, title: i18n.messages[i18n.locale].login.register },
+		meta: {auth: false, title: i18n.messages[i18n.locale].login.register, level: 0},
 		component: require('../views/users/register.vue') 
 	},{
 		path: '/users/login', //登录
 		name: "login",
-		meta: {auth: false, title: i18n.messages[i18n.locale].login.login },
+		meta: {auth: false, title: i18n.messages[i18n.locale].login.login, level: 0},
 		component: require('../views/users/login.vue') 
 	},{
 		path: '/customerGather/my-customer-gathers',
 		name: "myCustomerGathers",
-		meta: {title: "我的集客" },
+		meta: {title: "我的集客", level: 1},
 		component: require('../views/customerGather/my-customer-gathers.vue') 
 	},{
 		path: '/barcode', //二维码扫描
 		name: "barcode",
-		meta: {title: i18n.messages[i18n.locale].home.scanQr },
+		meta: {title: i18n.messages[i18n.locale].home.scanQr, level: 1},
 		component: require('../views/barcode.vue') 
 	},{
 		path: '/users/welcome', //欢迎
 		name: "welcome",
-		meta: {auth: false, title: "启动欢迎" },
+		meta: {auth: false, title: "启动欢迎", level: 0},
 		component: require('../views/users/welcome.vue') 
 	},{
 		path: '/my/my-notice', //通知
 		name: "myNotice",
-		meta: {title: i18n.messages[i18n.locale].home.taskList },
+		meta: {title: i18n.messages[i18n.locale].home.taskList, level: 1},
 		component: require('../views/my/my-notice.vue') 
 	},{
 		path: '/my/my-scan-result', //扫码结果
 		name: "myScanResult",
-		meta: {title: "扫码结果" },
+		meta: {title: "扫码结果", level: 2},
 		component: require('../views/my/my-scan-result.vue') 
 	},{
 		path: '/my/my-upload', //上传页面
@@ -77,47 +77,47 @@ export default {
 	},{
 		path: '/my/employee-list', //用户列表
 		name: "employeeList",
-		meta: {title: i18n.messages[i18n.locale].home.employeeList },
+		meta: {title: i18n.messages[i18n.locale].home.employeeList, level: 1},
 		component: require('../views/my/employee-list.vue') 
 	},{
 		path: '/my/employee-details', //用户详情
 		name: "employeeDetails",
-		meta: { title: i18n.messages[i18n.locale].component.employeeDetail },
+		meta: {title: i18n.messages[i18n.locale].component.employeeDetail, level: 2},
 		component: require('../views/my/employee-details.vue') 
 	},{
 		path: '/my/my-task-list', //任务列表
 		name: "myTaskList",
-		meta: {title: i18n.messages[i18n.locale].home.taskList },
+		meta: {title: i18n.messages[i18n.locale].home.taskList, level: 1},
 		component: require('../views/my/my-task-list.vue')
 	},{
 		path: '/my/my-details', //普通详情
 		name: "myDetails",
-		meta: { title: i18n.messages[i18n.locale].component.taskDetail },
+		meta: {title: i18n.messages[i18n.locale].component.taskDetail, level: 2},
 		component: require('../views/my/my-details.vue')
 	},{
 		path: '/my/my-department', //
 		name: "myDepartment",
-		meta: "组织架构",
+		meta: {title: "组织架构", level: 1},
 		component: require('../views/my/my-department.vue')
 	},{
 		path: '/my/my-inventory', //
 		name: "myInventory",
-		meta: "库存信息",
+		meta: {title: "库存信息", level: 1},
 		component: require('../views/my/my-inventory.vue')
 	},{
 		path: '/my/my-inventory-detail', //
 		name: "myInventoryDetail",
-		meta: "库存详情",
+		meta: {title: "库存详情", level: 2},
 		component: require('../views/my/my-inventory-detail.vue')
 	},{
 		path: '/components/embeded-webview', //
 		name: "webview",
-		meta: "内嵌视图",
+		meta: {title: "内嵌视图"},
 		component: require('../components/embeded-webview.vue')
 	},{
 		path: '*', //未发现该页面
 		name: "notFound",
-		meta: {auth: false, title: "未发现该页面" },
+		meta: {auth: false, title: "未发现该页面"},
 		component: require('../views/error/404.vue') 
 	}],
 	

@@ -179,8 +179,8 @@ export default {
 			success:function(data){
 				if (data) {
 					try{
+						console.log("data是", data);
 						var ret = JSON.parse(data);
-						console.log("data是", ret);
 						if(ret.respCode == 0){
 							if(typeof param.success == "function"){
 								param.success(ret);

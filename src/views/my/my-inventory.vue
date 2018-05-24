@@ -1,7 +1,7 @@
 <template>		
 	<div data-page="my-inventory-list" id="id-my-inventory-list" class="mui-content">
 		<div class="mui-scroll" >
-			<ul class="mui-table-view mui-table-view-chevron">
+			<!-- <ul class="mui-table-view mui-table-view-chevron">
 				<li class="mui-table-view-cell mui-media" v-for="(item, index) in inventoryList" @tap.stop.prevent="gotoDetails(index)">
 				    <a class="mui-navigate-right">
 						<div class="item-date">{{ item.createDate }}</div>
@@ -10,22 +10,56 @@
 								<span>id:</span> {{ item.id }}
 							</p>
 							<p class="mui-ellipsis">
-								<span>create name:</span> {{ item.tfstore.createName }}
+								<span>item number:</span> {{ item.tfiNo }}
 							</p>
 							<p class="mui-ellipsis">
-								<span>user name:</span> {{ item.tfstore.tfsUsername }}
+								<span>item name:</span> {{ item.tfiName }}
 							</p>
 							<p class="mui-ellipsis">
-								<span>store address:</span> {{ item.tfstore.tfsStoreaddress }}
+								<span>item type:</span> {{ item.tfiType }}
+							</p>
+							<p class="mui-ellipsis">
+								<span>create name:</span> {{ item.createName }}
+							</p>
+							<p class="mui-ellipsis">
+								<span>item amount:</span> {{ item.tfiMount }} {{ item.tfiUnit }}
+							</p>
+							<p class="mui-ellipsis">
+								<span>item unit:</span> {{ item.tfiUnit }}
+							</p>
+							<p class="mui-ellipsis">
+								<span>item available:</span> {{ item.tfiMountAble }}
+							</p>
+							<p class="mui-ellipsis">
+								<span>item price:</span> {{ item.tfiFigure }}
+							</p>
+							<p class="mui-ellipsis">
+								<span>store name:</span> {{ item.tFStore.tfsStoreshortname }}
 							</p>
 							<p class="mui-ellipsis">
 								<span>store level:</span> {{ item.tfstore.tfsStorelevelname }}
 							</p>
 							<p class="mui-ellipsis">
-								<span>create by:</span> {{ item.tfstore.createBy }}
+								<span>create by:</span> {{ item.createName }}
+							</p>
+							<p class="mui-ellipsis">
+								<span>creator email:</span> {{ item.createBy }}
 							</p>
 						</div>
 						<span v-if="checkIfNew" class="mui-badge mui-badge-danger">新</span>
+					</a>
+				</li>
+			</ul> -->
+
+			<ul class="mui-table-view mui-table-view-chevron">
+				<li class="mui-table-view-cell mui-media"  v-for="(item, index) in inventoryList" @tap.stop.prevent="gotoDetails(index)">
+					<a class="mui-navigate-right">
+						<!-- <img class="mui-media-object mui-pull-left" :src="image"> -->
+						<img class="mui-media-object mui-pull-left" :src="getimgurl(index)">
+						<div class="mui-media-body">
+							{{ item.tfiName }}
+							<p class="mui-ellipsis">型号: {{ item.tfiType }}</p>
+						</div>
 					</a>
 				</li>
 			</ul>
@@ -35,10 +69,11 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import image from "../../imgs/test/cbd.jpg"
 export default {
 	data() {
 		return {
-
+			image:image
 		};
 	},
 	created(){
@@ -91,6 +126,13 @@ export default {
 				this.$router.push({name: "myInventoryDetail", params: { content: this.inventoryList[idx] }});
 			// }
 		}, 
+		getimgurl(idx){
+			if(this.inventoryList && this.inventoryList[idx] && this.inventoryList[idx].photo){
+				return app.Config.webapiDomain + this.inventoryList[idx].photo;	
+			} else{
+				return this.image;
+			}
+		},
 
 	}
 }

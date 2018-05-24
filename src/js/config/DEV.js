@@ -5,9 +5,9 @@
  */
 module.exports = {
 	//M站点的接口地址
-	webapiDomain:'http://10.0.0.112:8080/maven-web-demo/',
+	// webapiDomain:'http://10.0.0.112:8080/maven-web-demo/',
 	// webapiDomain: "http://test.aemg.com.cn/",
-	// webapiDomain: "http://emcp.aemg.com.au/",
+	webapiDomain: "http://emcp.aemg.com.au/",
 	//M站点的地址
 	msiteDomain:'',
 	//支付服务器地址

@@ -4,7 +4,7 @@
 		<header class="mui-bar mui-bar-nav" v-show="$store.state.appData.isShowHead">
 			<!--<h1 class="mui-title">{{$store.state.appData.navbarTitle}}</h1>
 			<button id='setting' class=" mui-pull-right mui-btn-link">设置</button>-->
-			<a class="mui-icon mui-icon-left-nav mui-pull-left" @tap.stop.prevent="goBack" v-show="$store.state.appData.isShowBack"></a>
+			<a class="mui-icon mui-icon-left-nav mui-pull-left" @click.stop.prevent="goBack" v-show="$store.state.appData.isShowBack" ref="myBtn"></a>
 			<h1 class="mui-title">{{$store.state.appData.navbarTitle}}</h1>
 			<a class="mui-icon mui-pull-right"></a>
 		</header>
@@ -77,9 +77,10 @@
 		// 不！能！获取组件实例 `this`
 		// 因为当钩子执行前，组件实例还没被创建
 		created() {
-			this.initApp();
+			
 		},
 		mounted(){
+			this.initApp();
 			setTimeout(function(arg){
 				this.$store.dispatch("setLoadingState", arg);
 			}.bind(this), 1000, false);
@@ -97,10 +98,18 @@
 			}
 		},
 		methods: {
+			test: function(){
+				try{
+					app.mui.toast("fdadf-"+JSON.stringify(this))
+					this.$router.push({name: 'home'});	
+				}catch(e){
+					app.mui.toast("ffff-"+JSON.stringify(e))
+				}
+				
+			},
 			initApp: function() {
 				// var siteInfo = app.getSiteLocalStorage();
 				// app.mui.toast(JSON.stringify(siteInfo));
-
 				var _this = this;
 				var isLogin = app.globalService.isLogin();
 				if(isLogin){
@@ -108,27 +117,35 @@
 				} else{
 					this.$router.push({name: "login"});
 				}
-
 				if(app.Config.isApp){
 					ws=plus.webview.currentWebview();
 					ws.setStyle({scrollIndicator:'none'});
-					plus.key.addEventListener('backbutton',function(){
-			        	console.log("返回键被点击", location.hash)
-			        	// app.mui.toast(location.hash);
+
+					app.mui.back = function(){
+						return false;
+					}
+
+					plus.key.addEventListener('backbutton',function(event){
 			            if(location.hash=="#/" || location.hash=="#/users/login"){
-			            	// plus.runtime.quit();
 			            	ws && ws.close();
-			            	
-			            }else{
-			                // window.history.go(-1);
-			                this.goBack()
 			            }
-			        }, false);	
-
+			            else{
+			             	try{
+			             		const elem = _this.$refs.myBtn
+			             		if(elem){
+			             			elem.click();
+			             		} else{
+			             			app.mui.toast("no exist");
+			             		}
+			             	} catch(e){
+			             		app.mui.toast("throw error-" + e.message);
+			             	}
+			             	
+			            }
+			            return false;
+			        }, false);
 				}
-
 				
-
 				//1.检查更新
 				if(app.Config.isApp) {
 //					app.ajax({
@@ -184,6 +201,7 @@
 					_this.$store.dispatch("updateDirection", "backing");
 				}
 				if(_this.$store.state.routerStatus.backConfig && typeof(_this.$store.state.routerStatus.backConfig.callback) === "function"){
+
 					_this.$store.state.routerStatus.backConfig.callback(_goBack);
 				} else {
 					_goBack();

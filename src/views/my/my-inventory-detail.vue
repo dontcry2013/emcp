@@ -8,23 +8,32 @@
 				2017-02-23 16:20
 			</div> -->
 
+			<div class="imgholder" v-if="photourl">
+				<img :src="photourl">
+			</div>
+
+
 			<div class="contents" v-if="myContent!=undefined">
 				<p class="mui-ellipsis">
-					<span>id:</span> {{ myContent.id }}
-				</p><p class="mui-ellipsis">
-					<span>create name:</span> {{ myContent.tfstore.createName }}
+					<span>item name:</span> {{ myContent.tfiName }}
 				</p>
 				<p class="mui-ellipsis">
-					<span>user name:</span> {{ myContent.tfstore.tfsUsername }}
+					<span>item type:</span> {{ myContent.tfiType }}
 				</p>
 				<p class="mui-ellipsis">
-					<span>store address:</span> {{ myContent.tfstore.tfsStoreaddress }}
+					<span>item unit:</span> {{ myContent.tfiUnit }}
 				</p>
 				<p class="mui-ellipsis">
-					<span>store level:</span> {{ myContent.tfstore.tfsStorelevelname }}
+					<span>item available:</span> {{ myContent.tfiMountAble }}
 				</p>
 				<p class="mui-ellipsis">
-					<span>create by:</span> {{ myContent.tfstore.createBy }}
+					<span>item price:</span> {{ myContent.tfiFigure }}
+				</p>
+				<p class="mui-ellipsis">
+					<span>store name:</span> {{ myContent.tFStore.tfsStoreshortname }}
+				</p>
+				<p class="mui-ellipsis">
+					<span>creator email:</span> {{ myContent.createBy }}
 				</p>
 			</div>
 			<div class="ending" v-if="myContent!=undefined">
@@ -44,6 +53,14 @@ import { mapGetters } from 'vuex'
 export default {
 	computed: {
 		...mapGetters(['inventoryList', 'inventoryLastIndex']),
+
+		photourl : function(){
+			if(this.myContent && this.myContent.photo){
+				return app.Config.webapiDomain + this.myContent.photo;
+			} else{
+				return null;
+			}
+		},
 	},
 	data() {
 		return {
@@ -61,13 +78,18 @@ export default {
 	},
 	methods: {
 		uploadImg(){
-			this.$router.push({name: "myUpload", id: this.myContent.id});
+			this.$router.push({name: "myUpload", params:{id: this.myContent.id}});
 		}
 	}
 }
 </script>
 <style lang="less" scoped>
 	[data-page='my-inventory-detail'] {
+		.imgholder {
+			img {
+				width: 100%
+			}
+		}
 		.contents {    
 			overflow-x: hidden;
 			padding: 20px;
@@ -77,14 +99,14 @@ export default {
 			font-size: 10px;
 			color: gray;
 		    text-align: right;
-		    padding: 20px;
+		    padding: 44px;
 		}
 
 		footer {
 			width: 100%;
 			line-height: 44px;
 			height: 44px;
-			position: absolute;
+			position: fixed;
 			bottom: 0px;
 			text-align: center;
 			color: #FFF;

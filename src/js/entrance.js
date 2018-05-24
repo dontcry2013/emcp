@@ -53,6 +53,13 @@ mui.init({
 });
 if(mui.os.plus) {
 	app.Config.isApp = true;
+	/*	if(plus.fingerprint) {
+		mui.toast(plus.fingerprint.isSupport()?'支持指纹':'不支持指纹');
+		console.log(plus.fingerprint.isSupport()?'支持指纹':'不支持指纹');
+	} else{
+		mui.toast("指纹模块缺失，请更新版本");
+		console.log("指纹模块缺失，请更新版本");
+	}*/
 	mui.plusReady(function(){
 		Object.assign(app.Config.device, {
 			isAndroid : plus.os.name === "Android", //是否在安卓环境内
@@ -70,7 +77,25 @@ if(mui.os.plus) {
 		app.Config.version = plus.runtime.version;
 		app.Config.clientVersion = plus.runtime.innerVersion;
 		initVue();
-	});
+
+/*		mui.back = function(){
+			console.log("返回键在entrance被点击：" + location.hash);
+			mui.toast("返回键在entrance被点击：" + location.hash);
+			if(location.hash=="#/" || location.hash=="#/users/login"){
+            	mui.toast(11);
+            	ws && ws.close();
+            } else{
+            	try{
+            		mui.toast(22);
+	            	window.app.vueApp.router.push({name: 'home'});
+            	} catch(e){
+            		mui.toast("erro throwed");
+            	}
+            	
+            }
+		};
+		plus.key.addEventListener('backbutton', mui.back, false);
+*/	});
 } else {
 	mui.ready(function() {
 		initVue();

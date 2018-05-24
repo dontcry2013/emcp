@@ -43,7 +43,6 @@
 		  	
 		},
 		mounted: function(){
-			console.log("id是" + this.$route.params.id);
 		},
 		methods: {
 			// 拍照添加文件
@@ -108,8 +107,8 @@
 				);
 				task.setRequestHeader("X-AUTH-TOKEN", app.globalService.getLoginUserInfo().token);
 				task.addData("uid",this.getUid());
-				// task.addData("id", "40288c976351f33001635229444b0025");
 				task.addData("id", this.id);
+				console.log("task添加的ID："+ this.id);
 				for(var i=0;i<this.files.length;i++){
 					var f=this.files[i];
 					task.addFile(f.path,{key:f.name});
