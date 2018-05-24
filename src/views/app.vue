@@ -98,15 +98,6 @@
 			}
 		},
 		methods: {
-			test: function(){
-				try{
-					app.mui.toast("fdadf-"+JSON.stringify(this))
-					this.$router.push({name: 'home'});	
-				}catch(e){
-					app.mui.toast("ffff-"+JSON.stringify(e))
-				}
-				
-			},
 			initApp: function() {
 				// var siteInfo = app.getSiteLocalStorage();
 				// app.mui.toast(JSON.stringify(siteInfo));
