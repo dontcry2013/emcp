@@ -151,7 +151,7 @@ export default {
 	}, 
 	fetch(url, param){
 		app.mui.ajax({
-			type: "post",
+			type: param.method || "post",
 			headers: {
 				'Content-Type':'application/json',
 			},
