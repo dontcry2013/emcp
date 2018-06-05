@@ -5,14 +5,13 @@
 				<searchEmp></searchEmp>
 				<ul class="mui-table-view mui-table-view-chevron">
 					<li class="mui-table-view-cell mui-media" v-for="(item, index) in items" @tap.stop.prevent="gotoDetails(index)">
-					    <a class="mui-navigate-right">
-							<div class="item-date">{{ item.createDate }}</div>
-							<div class="mui-media-body">
-								{{ item.lastName }} {{ item.firstName }}
-								<p class="mui-ellipsis">{{ item.email }}</p>
-							</div>
-							<span v-if="checkIfNew" class="mui-badge mui-badge-danger">新</span>
-						</a>
+				    	<div style="display: inline-block;">
+				    		<avatar :username="addusername(item.firstName, item.lastName)"
+				    		:size="50"
+				    		:customStyle="custom"
+				    		></avatar>
+				    	</div>
+						<div class="item-name inline">{{ addusername(item.firstName, item.lastName)}}</div>
 					</li>
 				</ul>
 
@@ -23,14 +22,19 @@
 var currentPage = 0;
 var step = 10;
 import	searchEmp from "../../components/search-employee"
+import Avatar from 'vue-avatar'
 import { mapGetters } from 'vuex'
 export default {
 	components:{
-		searchEmp
+		searchEmp,
+		Avatar
 	},
 	data() {
 		return {
-			items: []
+			items: [],
+			custom: {
+				// display: "inline-block"
+			},
 		};
 	},
 	computed:{
@@ -49,6 +53,7 @@ export default {
 		var that = this;
 		if(this.employeeList.length == 0){
 			this.getMessage({"from": "0", "to": step.toString()}, function(mData){
+				currentPage += step;
 				that.items = mData;
 				that.$store.dispatch("updateEmployees", mData);
 			});
@@ -104,7 +109,6 @@ export default {
         				return ret;
 	        		});
 	        		if(temp.length > 0){
-	        			currentPage += step;
 	        			mData = temp.concat(that.employeeList);
 		        		app.vueApp.$store.dispatch("updateEmployees", mData);
 		        		that.items = mData;
@@ -119,8 +123,7 @@ export default {
 	        }, 6500);
 
 	        var that = this;
-
-	        this.getMessage({"from": (currentPage+1).toString(), "to": (currentPage+step+1).toString()}, function(mData){
+	        this.getMessage({"from": (currentPage).toString(), "to": (currentPage+step).toString()}, function(mData){
 	        	if(mData){
 	        		clearTimeout(timeID);
 	        		self.endPullupToRefresh()
@@ -200,6 +203,13 @@ export default {
 				}
 			});
 		},
+		addusername(a, b){
+			let name = a +" "+ b;
+			if(name.match((/ /g)||[]).length >= 2){
+				name = a;
+			}
+			return name
+		},
 	}
 }
 </script>
@@ -208,6 +218,14 @@ export default {
 		.item-date {
 			font-size: 10px;
 			color: gray;
+		}
+		.item-name {
+			font-size: 14px;
+			font-weight: bold;
+		}
+		.inline{
+			display: inline-block;
+			margin-left: 10px;
 		}
 	}
 </style>

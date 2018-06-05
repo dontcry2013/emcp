@@ -191,6 +191,11 @@ module.exports = {
 //  	alias: {
 //          hubs : 'http://www.dev.zmscrm.cn/signalr/hubs',//后续直接 require('AppStore') 即可
 //      }
+		alias: {
+	      'src': path.resolve(__dirname, '../src'),
+	      'imgs': path.resolve(__dirname, '../src/imgs'),
+	      'components': path.resolve(__dirname, '../src/components')
+	    },
 	},
 	devServer: {
 		historyApiFallback: true,//配置为true, 当访问的文件不存在时, 返回根目录下的index.html文件

@@ -3,11 +3,9 @@
 		<div class="page-content">
 			<div class="contents" v-if="myContent!=undefined">
 				<h1>{{myContent.tstTitle}}</h1>
-				<div style="margin-top:15px;">{{ myContent.tstDescribe }}</div>
-				<!-- <div><a v-bind:href="taskUrl">task url</a></div> -->
+				<!-- <div style="margin-top:15px;">{{ myContent.tstDescribe }}</div> -->
+				<div style="margin-top:15px;" v-html="myContent.tstDescribe"></div>
 				<div v-if="myContent.tstUrl"><a @tap.stop.prevent="openAnother">task url</a></div>
-				<!-- <div><input type="button" value="taskUrl" @tap.stop.prevent="openAnother"></div> -->
-
 			</div>
 			<div class="ending" v-if="myContent!=undefined">
 				<div><span>created by:</span> {{ myContent.createName }}</div>

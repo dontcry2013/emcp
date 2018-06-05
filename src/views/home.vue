@@ -1,7 +1,7 @@
 <template>
     <div data-page="home">
     	<div class="page-content">
-    		<div class="mui-row header">
+    		<!-- <div class="mui-row header">
     			<div class="mui-col-xs-12 title" style="position:relative;">
     				<div class="my_center">
     					<span>EMCP</span>	
@@ -9,17 +9,65 @@
     				<div class="my_right">
     					<span class="mui-icon mui-icon-email mui-pull-right"><i class="new"></i></span>
     				</div>
-
     			</div>
-		        <div class="mui-col-xs-6 handle-module">
-	            	<span class="mui-icon-extra mui-icon-extra-sweep" @tap.stop.prevent="scanCode"></span>
+		        <div class="mui-col-xs-6 handle-module" @tap.stop.prevent="scanCode">
+	            	<span class="mui-icon-extra mui-icon-extra-sweep"></span>
 	            	{{ $t("home.scanQr") }}
 		        </div>
 		        <div class="mui-col-xs-6 handle-module" @tap.stop.prevent="showMemberQrcode(true)">
 	            	<span class="mui-icon mui-icon-camera"></span>
 	            	{{ $t("home.memberQr") }}
 		        </div>
-		    </div>
+		    </div> -->
+
+    		<div ref="slider" class="mui-slider">
+				<div class="mui-slider-group mui-slider-loop">
+					<!-- 额外增加的一个节点(循环轮播：第一个节点是最后一张轮播) -->
+					<div class="mui-slider-item mui-slider-item-duplicate">
+						<a href="#">
+							<img src="../imgs/test/yuantiao.jpg">
+							<p class="mui-slider-title">静静看这世界</p>
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="#">
+							<img src="../imgs/test/shuijiao.jpg">
+							<p class="mui-slider-title">幸福就是可以一起睡觉</p>
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="#">
+							<img src="../imgs/test/muwu.jpg">
+							<p class="mui-slider-title">想要一间这样的木屋，静静的喝咖啡</p>
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="#">
+							<img src="../imgs/test/cbd.jpg">
+							<p class="mui-slider-title">Color of SIP CBD</p>
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="#">
+							<img src="../imgs/test/yuantiao.jpg">
+							<p class="mui-slider-title">静静看这世界</p>
+						</a>
+					</div>
+					<!-- 额外增加的一个节点(循环轮播：最后一个节点是第一张轮播) -->
+					<div class="mui-slider-item mui-slider-item-duplicate">
+						<a href="#">
+							<img src="../imgs/test/shuijiao.jpg">
+							<p class="mui-slider-title">幸福就是可以一起睡觉</p>
+						</a>
+					</div>
+				</div>
+				<div class="mui-slider-indicator mui-text-right">
+					<div class="mui-indicator mui-active"></div>
+					<div class="mui-indicator"></div>
+					<div class="mui-indicator"></div>
+					<div class="mui-indicator"></div>
+				</div>
+			</div>
 		    <div class="mui-table-view mui-grid-view handle-list">
 		    	<div class="mui-table-view-cell mui-col-xs-4" @tap.stop.prevent="listsNotification">
 		    		<span class="mui-icon mui-icon-email"></span>
@@ -49,7 +97,6 @@
 		    		<span class="mui-icon mui-icon-paperplane"></span>
 		    		<div class="mui-media-body">{{ $t("home.fileUpload") }}</div>
 		    	</div>
-		    	<!-- <myComponent @MyEvent="handleEvent"></myComponent> -->
 		    </div>
 		    <div class="main-footer-pic">
 	    		<img src="../imgs/main-footer-pic.jpg" width="100%" height="110"/>
@@ -60,7 +107,6 @@
 </template>
 <script>
 import memberQrcode from '../components/member-qrcode.vue'
-import myComponent from '../components/my-component.vue'
  
 module.exports = {
     data: function(){
@@ -70,7 +116,6 @@ module.exports = {
     },
     components: {
     	memberQrcode, 
-    	myComponent,
 	},
 	watch:{
 		show: function(v, ov){
@@ -87,6 +132,7 @@ module.exports = {
 	    // 		wt.close();
 	    // 	}, 1990);	
     	// });
+    	app.mui(this.$refs.slider).slider({interval:2000});
     },
     beforeRouteEnter: function(to, from, next) {
 		// 在渲染该组件的对应路由被 confirm 前调用
@@ -97,10 +143,6 @@ module.exports = {
 		return true;
 	},
     methods: {
-    	handleEvent(msg){
-    		console.log("输出", msg);
-    		this.show = true;
-    	},
         //显示二维码
         showMemberQrcode(memberQrcodeState){
        	 	this.memberQrcodeState = memberQrcodeState;

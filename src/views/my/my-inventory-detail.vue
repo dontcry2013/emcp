@@ -8,14 +8,15 @@
 				2017-02-23 16:20
 			</div> -->
 
-			<div class="imgholder" v-if="photourl">
-				<img :src="photourl">
+			<div class="imgholder" v-if="myContent!=undefined">
+				<img v-if="myContent.photo" :src="myContent.photo">
 			</div>
-
-
 			<div class="contents" v-if="myContent!=undefined">
 				<p class="mui-ellipsis">
 					<span>item name:</span> {{ myContent.tfiName }}
+				</p>
+				<p class="mui-ellipsis">
+					<span>item number:</span> {{ myContent.tfiNo }}
 				</p>
 				<p class="mui-ellipsis">
 					<span>item type:</span> {{ myContent.tfiType }}
@@ -69,12 +70,14 @@ export default {
 	},
 	mounted(){
 		this.$store.dispatch("updateNavbarTitle", this.$t('component.inventoryDetail'));
+		
 		if(this.$route.params.content){
 			this.myContent = this.$route.params.content;
 		} else if(typeof this.inventoryLastIndex == 'number' && this.inventoryLastIndex >= 0){
 			this.myContent = this.inventoryList[this.inventoryLastIndex];
 		}			
 
+		console.log("detail的photo"+JSON.stringify(this.myContent))
 	},
 	methods: {
 		uploadImg(){

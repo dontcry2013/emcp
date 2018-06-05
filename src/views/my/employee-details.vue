@@ -20,33 +20,64 @@
 				<div>{{ myContent.userKey }}</div> -->
 
 
-				<div><label for="">用户名:</label> {{ myContent.lastName }} {{ myContent.firstName }}</div>
-				<div><label for="">登录名/邮箱:</label> {{ myContent.userName }}</div>
-				<div><label for="">岗位:</label> {{ myContent.userKey }}</div>
-				<div><label for="">国家:</label> {{ myContent.regionId }}</div>
-				<div><label for="">Skype账号:</label> {{ myContent.skypeUsername }}</div>
-				<div><label for="">微信账号:</label> {{ myContent.weixin }}</div>
+				
+
+				<div class="mui-card">
+					<div class="mui-card-header mui-card-media">
+						<img :src="logoImg">
+						<div class="mui-media-body" style="line-height: 34px">
+							{{ myContent.lastName }} {{ myContent.firstName }}
+						</div>
+					</div>
+					<div class="mui-card-content records">
+						<div class="record-item"><label for="">用户名:</label> {{ myContent.lastName }} {{ myContent.firstName }}</div>
+						<div class="record-item"><label for="">登录名/邮箱:</label> {{ myContent.userName }}</div>
+						<div class="record-item"><label for="">岗位:</label> {{ myContent.userKey }}</div>
+						<div class="record-item"><label for="">国家:</label> {{ countryName }}</div>
+						<div class="record-item"><label for="">Skype账号:</label> {{ myContent.skypeUsername }}</div>
+						<div class="record-item"><label for="">手机号:</label> {{ myContent.mobilePhone }}</div>
+						<div class="record-item"><label for="">微信账号:</label> {{ myContent.weixin }}</div>
+					</div>
+					<div class="mui-card-footer">{{ myContent.createDate }}</div>
+				</div>
 
 			</div>
-			<div class="ending" v-if="myContent!=undefined">
+			<!-- <div class="ending" v-if="myContent!=undefined">
 				{{ myContent.createDate }}
-			</div>
+			</div> -->
 		</div>
 	</div>
 </template>
 <script>
+import logoImg from "../../../logo/logo.png"
 export default {
 	computed: {
 		myContent(){
 			console.log(this.$route.params.content);
-
 			return this.$route.params.content;	
-			
-			
-		}
+		},
+		countryName(){
+			let name = null;
+			if(!this.myContent){
+				return name;
+			}
+			switch(this.myContent.regionId){
+				case "1":
+				name = "中国";
+				break;
+				case "2":
+				name = "澳大利亚";
+				break;
+				default:
+				name = "其他";
+			}
+			return name;
+		},
 	},
 	data() {
-		return {};
+		return {
+			logoImg,
+		};
 	},
 	mounted(){
 		this.$store.dispatch("updateNavbarTitle", this.$t('component.employeeDetail'));
@@ -69,5 +100,12 @@ export default {
 		    text-align: right;
 		    padding: 20px;
 		}
+		.records {
+			padding: 10px;
+		}
+		.record-item {
+			padding: 2px;
+		}
+
 	}
 </style>

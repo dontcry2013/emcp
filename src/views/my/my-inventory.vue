@@ -1,80 +1,50 @@
 <template>		
-	<div data-page="my-inventory-list" id="id-my-inventory-list" class="mui-content">
-		<div class="mui-scroll" >
-			<!-- <ul class="mui-table-view mui-table-view-chevron">
-				<li class="mui-table-view-cell mui-media" v-for="(item, index) in inventoryList" @tap.stop.prevent="gotoDetails(index)">
-				    <a class="mui-navigate-right">
-						<div class="item-date">{{ item.createDate }}</div>
-						<div class="mui-media-body">
-							<p class="mui-ellipsis">
-								<span>id:</span> {{ item.id }}
-							</p>
-							<p class="mui-ellipsis">
-								<span>item number:</span> {{ item.tfiNo }}
-							</p>
-							<p class="mui-ellipsis">
-								<span>item name:</span> {{ item.tfiName }}
-							</p>
-							<p class="mui-ellipsis">
-								<span>item type:</span> {{ item.tfiType }}
-							</p>
-							<p class="mui-ellipsis">
-								<span>create name:</span> {{ item.createName }}
-							</p>
-							<p class="mui-ellipsis">
-								<span>item amount:</span> {{ item.tfiMount }} {{ item.tfiUnit }}
-							</p>
-							<p class="mui-ellipsis">
-								<span>item unit:</span> {{ item.tfiUnit }}
-							</p>
-							<p class="mui-ellipsis">
-								<span>item available:</span> {{ item.tfiMountAble }}
-							</p>
-							<p class="mui-ellipsis">
-								<span>item price:</span> {{ item.tfiFigure }}
-							</p>
-							<p class="mui-ellipsis">
-								<span>store name:</span> {{ item.tFStore.tfsStoreshortname }}
-							</p>
-							<p class="mui-ellipsis">
-								<span>store level:</span> {{ item.tfstore.tfsStorelevelname }}
-							</p>
-							<p class="mui-ellipsis">
-								<span>create by:</span> {{ item.createName }}
-							</p>
-							<p class="mui-ellipsis">
-								<span>creator email:</span> {{ item.createBy }}
-							</p>
-						</div>
-						<span v-if="checkIfNew" class="mui-badge mui-badge-danger">新</span>
-					</a>
-				</li>
-			</ul> -->
-
-			<ul class="mui-table-view mui-table-view-chevron">
-				<li class="mui-table-view-cell mui-media"  v-for="(item, index) in inventoryList" @tap.stop.prevent="gotoDetails(index)">
-					<a class="mui-navigate-right">
-						<!-- <img class="mui-media-object mui-pull-left" :src="image"> -->
-						<img class="mui-media-object mui-pull-left" :src="getimgurl(index)">
-						<div class="mui-media-body">
-							{{ item.tfiName }}
-							<p class="mui-ellipsis">型号: {{ item.tfiType }}</p>
-						</div>
-					</a>
-				</li>
-			</ul>
-
-		</div>
-	</div>	
+	<div data-page="my-inventory-list" class="mui-content">
+		<div class="mui-row">
+	        <div class="mui-col-xs-6 handle-module" @tap.stop.prevent="scanCode">
+            	<span class="mui-icon-extra mui-icon-extra-sweep"></span>
+            	{{ $t("home.scanQr") }}
+	        </div>
+	        <div class="mui-col-xs-6 handle-module">
+            	<span class="mui-icon mui-icon-camera"></span>
+            	{{ $t("home.memberQr") }}
+	        </div>
+	    </div>
+	    <div style="position: relative; height: 100%;">
+		    <div id="id-my-inventory-list" class="mui-scroll-wrapper">
+		    	<div class="mui-scroll" >
+					<!-- <input v-model="searchText" @click="popUp" type="text" placeholder="edit me"> -->
+					<ul class="mui-table-view mui-table-view-chevron">
+						<li class="mui-table-view-cell mui-media"  v-for="(item, index) in inventoryList" @tap.stop.prevent="gotoDetails(index)">
+							<a class="mui-navigate-right">
+								<img class="mui-media-object mui-pull-left" v-if="item.photo" :src="item.photo">
+								<img class="mui-media-object mui-pull-left" v-else :src="image">
+								<div class="mui-media-body">
+									{{ item.tfiName }}
+									<p class="mui-ellipsis">型号: {{ item.tfiType }}</p>
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+		    </div>
+	    </div>
+		<!-- <mySubMenu v-bind:ifShowSubMenu="subMenuState" @MyEvent="handleMySubMenuEvent"></mySubMenu> -->
+	</div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
 import image from "../../imgs/test/cbd.jpg"
+import mySubMenu from '../../components/inventory-submenu-component.vue'
 export default {
 	data() {
 		return {
-			image:image
+			image:image,
+			subMenuState: false,
 		};
+	},
+	components:{
+		mySubMenu,
 	},
 	created(){
 
@@ -126,22 +96,59 @@ export default {
 				this.$router.push({name: "myInventoryDetail", params: { content: this.inventoryList[idx] }});
 			// }
 		}, 
-		getimgurl(idx){
-			if(this.inventoryList && this.inventoryList[idx] && this.inventoryList[idx].photo){
-				return app.Config.webapiDomain + this.inventoryList[idx].photo;	
-			} else{
-				return this.image;
-			}
+
+		popUp(){
+			this.subMenuState = true;
 		},
+
+		handleMySubMenuEvent(msg){
+    		console.log("输出", msg);
+    		this.subMenuState = false;
+    	},
+
+		scanCode: function(){
+        	if(!app.Config.isApp){
+        		app.mui.toast(this.$t("message.scanEnvError"));
+        		return;
+        	}
+        	this.$store.dispatch("bindBarcodeOnmarkedEvent", this.scanResult);
+        	this.$router.push({name: "barcode"});
+        },
+
+        scanResult(type, result){
+    		console.log("扫码结果", result);
+    		this.$router.push({name: "myScanResult", params: {"scan-result": result}});
+        },
 
 	}
 }
 </script>
+<style>
+	[data-page='my-inventory-list'] #id-my-inventory-list > .mui-pull-top-pocket{
+		top: 0px !important;	
+	}
+</style>
 <style lang="less" scoped>
+
 	[data-page='my-inventory-list'] {
-		.item-date {
-			font-size: 10px;
-			color: gray;
+		.mui-row {
+
+		}
+		.handle-module {
+			height: 100px;
+			text-align: center;
+			
+			span {
+				display: block;
+				font-size: 55px;
+			    margin: 10px auto 0;
+			    width: 65px;
+			    height: 65px;
+			    overflow: hidden;
+			}
+		}
+		#id-my-inventory-list > .mui-pull-top-pocket{
+			top: 0px !important;
 		}
 	}
 </style>

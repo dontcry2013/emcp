@@ -31,7 +31,20 @@ window.debounce = window._ = debounce;
 const initVue = function(){
 	Vue.use(Vuex);
 	Vue.use(VueRouter);
-
+	Vue.filter('capitalize', function (value) {
+		if (!value) return ''
+	  	value = value.toString()
+	  	return value.charAt(0).toUpperCase() + value.slice(1)
+	});
+	Vue.filter('formatdate', function (value) {
+	  	if (!value) return ''
+	  	value = value.toString()
+	  	if(new Date(value) !== "Invalid Date" && !isNaN(new Date(value)) ){
+	  		return new Date(value).toLocaleDateString();	
+	  	} else{
+	  		return ''
+	  	}
+	});
 	Object.keys(directives).forEach((key) => {
 	    Vue.directive(key, directives[key]);
 	});

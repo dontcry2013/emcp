@@ -209,4 +209,31 @@ export default {
 			}
 		});
 	},
+	download_img(image_url, local_image_url, cb){
+        // filename:下载任务在本地保存的文件路径
+        let download_task = plus.downloader.createDownload(image_url, {filename: local_image_url}, function(download, status) {
+            // 下载失败,删除本地临时文件
+            if(status != 200){
+                console.log('下载失败,status'+status);
+                if(local_image_url != null){
+                    plus.io.resolveLocalFileSystemURL(local_image_url, function(entry) {
+                        entry.remove(function(entry) {
+                            console.log("临时文件删除成功" + local_image_url);
+                            // 重新下载图片
+                            // download_img();
+                        }, function(e) {
+                            console.log("临时文件删除失败" + local_image_url);
+                        });
+                    });
+                }
+            } else{
+                // 把下载成功的图片显示
+                // 将本地URL路径转换成平台绝对路径
+                console.log("下载成功:" + local_image_url);
+                var convertedimage = plus.io.convertLocalFileSystemURL(local_image_url);
+                cb(convertedimage);
+            }
+        });
+        download_task.start();
+    }, 
 }

@@ -1,16 +1,14 @@
 <template>
 	<div data-page="my-department">
-		<ul id="demo">
-		  <treeView v-if="inventorySubMenu"
+		  <treeView v-if="treeData"
 		    class="item"
-		    :model="inventorySubMenu">
+		    :model="treeData">
 		  </treeView>
-		</ul>
 	</div>
 </template>
 
 <script>
-import treeView from '../../components/item.vue'
+import treeView from '../../components/treeview.vue'
 import { mapGetters } from 'vuex'
 export default {
 	components:{
@@ -21,7 +19,7 @@ export default {
 	},
 	data() {
 		return {
-		/*	treeData:{
+			treeData:{
 			  name: 'My Tree',
 			  children: [
 			    { name: 'hello' },
@@ -48,7 +46,7 @@ export default {
 			      ]
 			    }
 			  ]
-			},*/
+			},
 		};
 	},
 	mounted(){

@@ -20,6 +20,12 @@ const actions = {
 				"to": (state.inventoryRange.from + state.inventoryRange.limit).toString()
 			},
 			success:function(ret){
+				for(let obj of ret.data){
+					if(obj.photo){
+						obj.photo = app.Config.webapiDomain + obj.photo;
+						commit('getImgUrl', obj);
+					}
+				}
 				commit("set_inventory_list", ret.data);
 			},
 			failed:function(msg){
@@ -81,7 +87,7 @@ const actions = {
 				"tfiNo": tfiNo,
 			},
 			success:function(ret){
-	    		if(ret.data && ret.data.length > 0){
+	    		if(ret.data){
 	    			commit("set_inventory_scanned", ret.data);
 	    		}
 			},
@@ -98,6 +104,10 @@ const actions = {
 		};
 
 		app.utils.fetch(app.Config.webapiDomain + "rest/tFInventoryController/", param)
+	},
+
+	setScanInventory({commit, state}, data){
+		commit("set_inventory_scanned", data);
 	},
 
 	updateInventoryLastIndex({commit, state}, idx){
@@ -123,7 +133,51 @@ const mutations = {
 	},
 	set_inventory_scanned(state, data){
 		state.inventoryScanned = data;
-	}
+	},
+	getImgUrl(state, obj){
+		app.mui.plusReady(function(){
+        	// 判断本地是否存在该文件，存在就就直接使用，否则就下载
+        	let local_image_url = '_downloads/image/' + obj.id + '.jpg';
+        	plus.io.resolveLocalFileSystemURL(local_image_url, function( entry ) {
+	            if(entry){
+	                obj.photo = plus.io.convertLocalFileSystemURL(local_image_url);
+	                console.log("photo是" + obj.photo);
+	            }else{
+	            	download_img(obj.photo, local_image_url);
+	            }
+	        }, function (error) {
+	            console.log(JSON.stringify(error));
+	            download_img(obj.photo, local_image_url);
+	        });
+        	function download_img(image_url, local_image_url){
+            	console.log("启动下载" + image_url);
+                // filename:下载任务在本地保存的文件路径
+                let download_task = plus.downloader.createDownload(image_url, {filename: local_image_url}, function(download, status) {
+                    // 下载失败,删除本地临时文件
+                    if(status != 200){
+                        console.log('下载失败,status'+status);
+                        if(local_image_url != null){
+                            plus.io.resolveLocalFileSystemURL(local_image_url, function(entry) {
+                                entry.remove(function(entry) {
+                                    console.log("临时文件删除成功" + local_image_url);
+                                    // 重新下载图片
+                                    // download_img();
+                                }, function(e) {
+                                    console.log("临时文件删除失败" + local_image_url);
+                                });
+                            });
+                        }
+                    } else{
+                        // 把下载成功的图片显示
+                        // 将本地URL路径转换成平台绝对路径
+                        console.log("下载成功" + local_image_url);
+                        obj.photo = plus.io.convertLocalFileSystemURL(local_image_url);
+                    }
+                });
+                download_task.start();
+            }
+        });
+	},
 }
 
 export default {

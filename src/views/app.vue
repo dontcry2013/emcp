@@ -11,9 +11,10 @@
 		<div class="pages" :class="{'mui-content': $store.state.appData.isShowHead, 'toolbar-fixed': $store.state.appData.isShowFoot}">
 			<transition :name="$store.state.routerStatus.transition">
 				<!-- 包裹动态组件时，会缓存不活动的组件实例，而不是销毁它们 -->
-				<!--<keep-alive>-->
+				<keep-alive v-if="$route.meta.keepAlive">
 					<router-view class="page"></router-view>
-				<!--</keep-alive>-->
+				</keep-alive>
+                <router-view v-if="! $route.meta.keepAlive" class="page"></router-view>
 			</transition>
 		</div>
 		<!--<footer class="mui-bar mui-bar-tab">

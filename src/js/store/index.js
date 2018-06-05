@@ -8,6 +8,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import appData from './app-data'
 import appEvent from './app-event'
+import appCache from './app-cache'
 import routerStatus from './router-status'
 import message from "./modules/message"
 import task from "./modules/task"
@@ -23,6 +24,6 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     strict: process.env.NODE_ENV !== 'PRD', //在非生产环境下，使用严格模式
     modules: {
-        appData, routerStatus, appEvent, task, inventory, inventorySubMenu, message, employee, userinfo, com, 
+        appData, appEvent, appCache, routerStatus, task, inventory, inventorySubMenu, message, employee, userinfo, com, 
     }
 })

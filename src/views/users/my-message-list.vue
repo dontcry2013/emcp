@@ -32,10 +32,12 @@
 
 				<li class="mui-table-view-cell mui-media" v-for="(item, index) in messageList" @tap.stop.prevent="gotoDetails(index)">
 				    <a class="mui-navigate-right">
-						<div class="item-date">{{ item.createDate }}</div>
-						<div class="mui-media-body">
-							{{ item.tfnTitle }}
+				    	<div class="mui-media-body" style="display: inline-block;">
+				    		<span class="mui-icon mui-icon-flag"></span>
+							<span>{{ item.tfnTitle }}</span>
 						</div>
+						<div class="item-date">{{ item.createDate | formatdate }}</div>
+						
 						<span v-if="checkIfNew" class="mui-badge mui-badge-danger">新</span>
 					</a>
 				</li>
@@ -98,7 +100,7 @@ export default {
 			} else{
 				this.$router.push({name: "messageDetails"});
 			}
-		}, 
+		},
 	}
 }
 </script>

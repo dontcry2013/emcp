@@ -5,7 +5,6 @@ const state = {
 const actions = {
 
 	getInventorySubMenu: function({state, commit}){
-		console.log("state是", state);
 		var param = {
 			method:"GET",
 			success:function(ret){
