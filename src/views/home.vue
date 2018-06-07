@@ -24,37 +24,37 @@
 				<div class="mui-slider-group mui-slider-loop">
 					<!-- 额外增加的一个节点(循环轮播：第一个节点是最后一张轮播) -->
 					<div class="mui-slider-item mui-slider-item-duplicate">
-						<a href="#">
+						<a ref="slider1" href="#" @tap.stop.prevent="tapTheSlider">
 							<img src="../imgs/test/yuantiao.jpg">
 							<p class="mui-slider-title">静静看这世界</p>
 						</a>
 					</div>
-					<div class="mui-slider-item">
+					<div class="mui-slider-item" @tap.stop.prevent="tapTheSlider2">
 						<a href="#">
 							<img src="../imgs/test/shuijiao.jpg">
 							<p class="mui-slider-title">幸福就是可以一起睡觉</p>
 						</a>
 					</div>
-					<div class="mui-slider-item">
+					<div class="mui-slider-item" @tap.stop.prevent="tapTheSlider">
 						<a href="#">
 							<img src="../imgs/test/muwu.jpg">
 							<p class="mui-slider-title">想要一间这样的木屋，静静的喝咖啡</p>
 						</a>
 					</div>
-					<div class="mui-slider-item">
+					<div class="mui-slider-item" @tap.stop.prevent="tapTheSlider">
 						<a href="#">
 							<img src="../imgs/test/cbd.jpg">
 							<p class="mui-slider-title">Color of SIP CBD</p>
 						</a>
 					</div>
-					<div class="mui-slider-item">
+					<div class="mui-slider-item" @tap.stop.prevent="tapTheSlider">
 						<a href="#">
 							<img src="../imgs/test/yuantiao.jpg">
 							<p class="mui-slider-title">静静看这世界</p>
 						</a>
 					</div>
 					<!-- 额外增加的一个节点(循环轮播：最后一个节点是第一张轮播) -->
-					<div class="mui-slider-item mui-slider-item-duplicate">
+					<div class="mui-slider-item mui-slider-item-duplicate" @tap.stop.prevent="tapTheSlider">
 						<a href="#">
 							<img src="../imgs/test/shuijiao.jpg">
 							<p class="mui-slider-title">幸福就是可以一起睡觉</p>
@@ -185,8 +185,18 @@ module.exports = {
     		console.log("扫码结果", result);
     		this.$router.push({name: "myScanResult", params: {"scan-result": result}});
         },
+
         uploadFile(type, result){
     		this.$router.push({name: "myUpload"});
+        },
+
+        tapTheSlider(){
+        	console.log(123, this.$refs.slider1.getElementsByTagName("p")[0].innerHTML);
+        	console.log(234, this.$el);
+        },
+
+        tapTheSlider2(event){
+        	console.log(event.target);
         },
     },
     beforeRouteLeave: function(to, from, next) {
