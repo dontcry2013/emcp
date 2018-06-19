@@ -8,6 +8,7 @@ export default {
 		direction: null,//going：前进|backing后退|replace
 		transition: "next", //fang
 		backConfig: {},//返回指定的路由配置选项{name|appfrom|query|url|callback}
+		enterPage: null,
 	},
 	mutations: {
 		//修改路由的方向
@@ -28,6 +29,9 @@ export default {
 		resetBackConfig(state){
 			state.backConfig = {};
 		},
+		updateEnterPage(state, page){
+			state.enterPage = page;
+		},
 	},
 	actions: {
 		updateDirection({commit}, direction){
@@ -42,5 +46,13 @@ export default {
 		resetBackConfig({commit}){
 			commit("resetBackConfig");
 		},
+		updateEnterPage({commit}, page){
+			commit("updateEnterPage", page);
+		},
 	},
+	getters: {
+	    enterPage: state => {
+	      return state.enterPage;
+	    }
+	}
 }

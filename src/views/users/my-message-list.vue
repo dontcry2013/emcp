@@ -30,7 +30,7 @@
 					</a>
 				</li> -->
 
-				<li class="mui-table-view-cell mui-media" v-for="(item, index) in messageList" @tap.stop.prevent="gotoDetails(index)">
+				<!-- <li class="mui-table-view-cell mui-media" v-for="(item, index) in messageList" @tap.stop.prevent="gotoDetails(index)">
 				    <a class="mui-navigate-right">
 				    	<div class="mui-media-body" style="display: inline-block;">
 				    		<span class="mui-icon mui-icon-flag"></span>
@@ -40,7 +40,18 @@
 						
 						<span v-if="checkIfNew" class="mui-badge mui-badge-danger">新</span>
 					</a>
+				</li> -->
+
+				<li style="text-align: center;" v-for="(item, index) in messageList" @tap.stop.prevent="gotoDetails(index)">
+					<div class="clsCreateDate">{{ item.createDate | formatdate }}</div>
+					<div class="mui-card">
+						<div class="cardhead mui-card-header">{{ item.tfnTitle }}</div>
+						<!-- <div class="mui-card-content">{{ item.tstDescribe }}</div> -->
+						<div class="cardcontent" v-html="item.tfnDescribe"></div>
+						<div style="color: #48a5f3" class="mui-card-footer">点击进入查看</div>
+					</div>
 				</li>
+
 			</ul>
 			<!-- <div>{{messageList}}</div> -->
 		</div>
@@ -71,7 +82,7 @@ export default {
 			      }
 			    },
               	up: {
-	                height: 50, //可选.默认50.触发上拉加载拖动距离
+	                height: 100, //可选.默认50.触发上拉加载拖动距离
 	                auto: _this.messageList && _this.messageList.length>0 ? false : true, //可选,默认false.自动上拉加载一次
 	                contentnomore: '已到底了', //可选，请求完毕若没有更多数据时显示的提醒内容；
 	                callback: function () {
@@ -109,6 +120,25 @@ export default {
 		.item-date {
 			font-size: 10px;
 			color: gray;
+		}
+		.clsCreateDate{
+			padding: 2px 8px;
+			display: inline-block;
+			background-color: lightgray;
+			margin-top: 10px;
+			border-radius: 5px;
+			color: white;
+		}
+		.cardcontent{
+			height: 140px;
+			text-align: left;
+			padding: 15px;
+			background-image: url("../../imgs/test/yuantiao.jpg");
+			vertical-align: middle;
+		}
+		.cardhead{
+			font-weight: bold;
+		    color: cornflowerblue;
 		}
 	}
 </style>

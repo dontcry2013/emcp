@@ -209,7 +209,7 @@ export default {
 			}
 		});
 	},
-	download_img(image_url, local_image_url, cb){
+	download_img: function(image_url, local_image_url, cb){
         // filename:下载任务在本地保存的文件路径
         let download_task = plus.downloader.createDownload(image_url, {filename: local_image_url}, function(download, status) {
             // 下载失败,删除本地临时文件
@@ -236,4 +236,16 @@ export default {
         });
         download_task.start();
     }, 
+    createLocalPushMsg: function(arg = 0){
+		var options = {
+			cover:false
+		};
+		var str = "欢迎使用HTML5+创建本地消息！" + arg;
+		plus.push.createMessage( str, "LocalMSG", options );
+		console.log( "创建本地消息成功！" + arg );
+		console.log( "请到系统消息中心查看！" + arg );
+		if(plus.os.name=="iOS"){
+			console.log('*如果无法创建消息，请到"设置"->"通知"中配置应用在通知中心显示!' + arg);
+		}
+	},
 }

@@ -1,8 +1,5 @@
 {
-	"@platforms": [
-		"android",
-		"iPhone"
-	],
+	"@platforms": ["android", "iPhone", "iPad"],
 	"id": "H5FCBB4E4",/*应用的标识，创建应用时自动生成，勿手动修改*/
 	"name": "EMCP",/*应用名称，程序桌面图标名称*/
 	"version": {
@@ -190,36 +187,23 @@
 			"splashscreen": {
 				"ios": {
 					"iphone": {
-						"default": "logo/start 320x480.png", /*iPhone3启动图片选，分辨率：320x480*/
-						"retina35": "logo/Default@2x~iphone.png",/*3.5英寸设备(iPhone4)启动图片，分辨率：640x960*/
-						"retina40": "logo/Default-568h@2x~iphone.png",/*4.0 英寸设备(iPhone5/iPhone5s)启动图片，分辨率：640x1136*/
-						"retina47": "logo/Default-667h.png",/*4.7 英寸设备(iPhone6)启动图片，分辨率：750x1334*/
-						"retina55": "logo/Default-736h.png",/*5.5 英寸设备(iPhone6 Plus)启动图片，分辨率：1242x2208*/
-						"retina55l": "logo/Default-Landscape-736h.png",
-						"iphonex": "logo/start 1125x2436.png",
-						"iphonexl": "logo/start 2436x1125.png"
+						"default": "logo/start 320x480.png","iphonex":"logo/start 1125x2436.png","retina47":"logo/750x1334.png","iphonexl":"logo/start 2436x1125.png","retina35":"logo/640x960.png","retina40":"logo/640x1136.png","retina55":"logo/1242x2208.png","retina55l":"logo/2208x1242.png"
 					},
 					"ipad": {
+						"portrait":"logo/start 768x1004.png","landscape":"logo/start 1024x748.png","portrait7":"logo/start 768x1024.png","landscape7":"logo/1024x768.png","portrait-retina":"logo/start 1536x2008.png","portrait-retina7":"logo/1536x2048.png","landscape-retina":"logo/start 2048x1496.png","landscape-retina7":"logo/2048x1536.png"
 						/*iPad竖屏启动图片，分辨率：768x1004*/
 						/*iPad高分屏竖屏图片，分辨率：1536x2008*/
 						/*iPad横屏启动图片，分辨率：1024x748*/
 						/*iPad高分屏横屏启动图片，分辨率：2048x1496*/
-						"portrait7": "logo/start 768x1024.png", /*iPad iOS7竖屏启动图片，分辨率：768x1024*/
-						"portrait-retina7": "logo/Default-Portrait@2x~ipad.png",/*iPad iOS7高分屏竖屏图片，分辨率：1536x2048*/
-						"landscape7": "logo/Default-Landscape~ipad.png", /*iPad iOS7横屏启动图片，分辨率：1024x768*/
-						"landscape-retina7": "logo/Default-Landscape@2x~ipad.png",
-						"portrait-retina": "logo/start 1536x2008.png",
-						"landscape-retina": "logo/start 2048x1496.png",
-						"portrait": "logo/start 768x1004.png",
-						"landscape": "logo/start 1024x748.png"
+						 /*iPad iOS7竖屏启动图片，分辨率：768x1024*/
+						/*iPad iOS7高分屏竖屏图片，分辨率：1536x2048*/
+						 /*iPad iOS7横屏启动图片，分辨率：1024x768*/
+						
 					}
 				},
 				"android": {
 					"mdpi": "logo/start 240x320.png", /*普通屏启动图片，分辨率：240x282*/
-					"ldpi": "logo/start 320x480.png",
-					"xxhdpi": "logo/start 1080x1882.png",
-					"hdpi": "logo/start 480x762.png",
-					"xhdpi": "logo/start 720x1242.png"
+					"ldpi": "logo/start 320x480.png","hdpi":"logo/start 480x762.png","xhdpi":"logo/start 720x1242.png","xxhdpi":"logo/start 1080x1882.png"
 				}
 			},
 			"debug": true,
@@ -237,8 +221,7 @@
 			"rp": false,
 			"splash": false,
 			"push": false
-		},
-		"adid": ""
+		}
 	},
 	"fullscreen": false,
 	"dependencies": {

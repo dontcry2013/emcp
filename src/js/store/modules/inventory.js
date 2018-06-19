@@ -6,6 +6,7 @@ const state = {
 	},
 	inventoryLastIndex: null,
 	inventoryScanned: null,
+	inventoryShowRightIcon: null,
 }
 
 const actions = {
@@ -113,12 +114,17 @@ const actions = {
 	updateInventoryLastIndex({commit, state}, idx){
 		commit("set_inventory_last_index", idx);
 	},
+
+	updateInventoryRightIconState({commit, state}, status){
+		commit("set_inventory_righticon", status);
+	},
 }
 
 const getters = {
 	inventoryList: state => state.inventoryList,
 	inventoryLastIndex: state => state.inventoryLastIndex,
 	inventoryScanned: state => state.inventoryScanned,
+	inventoryRightIcon: state => state.inventoryShowRightIcon,
 }
 
 const mutations = {
@@ -133,6 +139,9 @@ const mutations = {
 	},
 	set_inventory_scanned(state, data){
 		state.inventoryScanned = data;
+	},
+	set_inventory_righticon(state, data){
+		state.inventoryShowRightIcon = data;
 	},
 	getImgUrl(state, obj){
 		app.mui.plusReady(function(){

@@ -10,15 +10,15 @@
             	{{ $t("home.memberQr") }}
 	        </div>
 	    </div>
-	    <div style="position: relative; height: 100%;">
+	    <div style="position: relative; height: 90%;">
 		    <div id="id-my-inventory-list" class="mui-scroll-wrapper">
 		    	<div class="mui-scroll" >
 					<!-- <input v-model="searchText" @click="popUp" type="text" placeholder="edit me"> -->
 					<ul class="mui-table-view mui-table-view-chevron">
 						<li class="mui-table-view-cell mui-media"  v-for="(item, index) in inventoryList" @tap.stop.prevent="gotoDetails(index)">
 							<a class="mui-navigate-right">
-								<img class="mui-media-object mui-pull-left" v-if="item.photo" :src="item.photo">
-								<img class="mui-media-object mui-pull-left" v-else :src="image">
+								<img class="img-size mui-media-object mui-pull-left" v-if="item.photo" :src="item.photo">
+								<img class="img-size mui-media-object mui-pull-left" v-else :src="image">
 								<div class="mui-media-body">
 									{{ item.tfiName }}
 									<p class="mui-ellipsis">型号: {{ item.tfiType }}</p>
@@ -52,6 +52,7 @@ export default {
 	mounted(){
 		var _this = this;
 		this.$store.dispatch("updateNavbarTitle", this.$t('home.inventory'));
+		this.$store.dispatch("updateInventoryRightIconState", true);
 		app.mui.ready(function(){
 			app.mui("#id-my-inventory-list").pullRefresh({
 				down : {
@@ -81,6 +82,9 @@ export default {
 		next();
 		return true;
 	},
+	beforeDestroy: function(){
+		this.$store.dispatch("updateInventoryRightIconState", false);
+	},
 	methods: {
 		tabDown:function(self){
 	        this.$store.dispatch('updateInventoryList', self);
@@ -106,19 +110,7 @@ export default {
     		this.subMenuState = false;
     	},
 
-		scanCode: function(){
-        	if(!app.Config.isApp){
-        		app.mui.toast(this.$t("message.scanEnvError"));
-        		return;
-        	}
-        	this.$store.dispatch("bindBarcodeOnmarkedEvent", this.scanResult);
-        	this.$router.push({name: "barcode"});
-        },
 
-        scanResult(type, result){
-    		console.log("扫码结果", result);
-    		this.$router.push({name: "myScanResult", params: {"scan-result": result}});
-        },
 
 	}
 }
@@ -133,6 +125,10 @@ export default {
 	[data-page='my-inventory-list'] {
 		.mui-row {
 
+		}
+		.img-size{
+			height: 42px;
+			width: 42px;
 		}
 		.handle-module {
 			height: 100px;

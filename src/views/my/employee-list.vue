@@ -72,7 +72,8 @@ export default {
 			    },
               	up: {
               		"height": 100, //可选.默认50.触发上拉加载拖动距离
-	                "auto": false, //可选,默认false.自动上拉加载一次
+	                "auto": true, //可选,默认false.自动上拉加载一次
+	                "auto": that.employeeList && that.employeeList.length>0 ? false : true, //可选,默认false.自动上拉加载一次
 	                callback: function () {
 	                  	var self = this
 	                  	that.tabUp(self);

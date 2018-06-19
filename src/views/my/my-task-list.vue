@@ -14,15 +14,27 @@
 				</li> -->
 
 
-				<li style="text-align: center;" v-for="(item, index) in taskList" @tap.stop.prevent="gotoDetails(index)">
+				<!-- <li style="text-align: center;" v-for="(item, index) in taskList" @tap.stop.prevent="gotoDetails(index)">
 					<div class="clsCreateDate">{{ item.createDate | formatdate }}</div>
 					<div class="mui-card">
 						<div class="cardhead mui-card-header">{{ item.tstTitle }}</div>
-						<!-- <div class="mui-card-content">{{ item.tstDescribe }}</div> -->
 						<div class="cardcontent" v-html="item.tstDescribe"></div>
 						<div style="color: #48a5f3" class="mui-card-footer">点击进入查看</div>
 					</div>
+				</li> -->
+
+				<li class="mui-table-view-cell mui-media" v-for="(item, index) in taskList" @tap.stop.prevent="gotoDetails(index)">
+				    <a class="mui-navigate-right">
+				    	<div class="mui-media-body" style="display: inline-block;">
+				    		<span class="mui-icon mui-icon-flag"></span>
+							<span>{{ item.tstTitle }}</span>
+						</div>
+						<div class="item-date">{{ item.createDate | formatdate }}</div>
+						
+						<span v-if="checkIfNew" class="mui-badge mui-badge-danger">新</span>
+					</a>
 				</li>
+
 			</ul>
 		</div>
 	</div>	

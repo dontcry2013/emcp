@@ -107,12 +107,15 @@
 </template>
 <script>
 import memberQrcode from '../components/member-qrcode.vue'
- 
+import {mapGetters} from "vuex"
 module.exports = {
     data: function(){
         return {
         	memberQrcodeState: false,
         }
+    },
+    computed:{
+    	...mapGetters(["enterPage"]),
     },
     components: {
     	memberQrcode, 
@@ -133,6 +136,12 @@ module.exports = {
 	    // 	}, 1990);	
     	// });
     	app.mui(this.$refs.slider).slider({interval:2000});
+		if(this.enterPage){
+			this.$router.push({name: this.enterPage});
+		}
+    },
+    beforeDestroy: function(){
+    	this.$store.dispatch("updateEnterPage", null);
     },
     beforeRouteEnter: function(to, from, next) {
 		// 在渲染该组件的对应路由被 confirm 前调用

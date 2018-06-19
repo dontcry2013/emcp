@@ -3,7 +3,6 @@ import appRouters from "./components/app-routers"
 import i18n from './utils/i18n'
 
 export default {
-	
 	routes: [{
 		path: '/', //首页
 		name: "home",
@@ -248,6 +247,9 @@ export default {
 		if(router.meta.title && router.meta.title != store.state.appData.navbarTitle){
 			store.dispatch("updateNavbarTitle", router.meta.title);
 			document.title = "AEMG-" + router.meta.title || "";
+		}
+		if(store.state.routerStatus.enterPage){
+			// store.dispatch("updateEnterPage", null);
 		}
 	}
 }

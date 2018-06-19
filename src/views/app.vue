@@ -6,16 +6,22 @@
 			<button id='setting' class=" mui-pull-right mui-btn-link">设置</button>-->
 			<a class="mui-icon mui-icon-left-nav mui-pull-left" @click.stop.prevent="goBack" v-show="$store.state.appData.isShowBack" ref="myBtn"></a>
 			<h1 class="mui-title">{{$store.state.appData.navbarTitle}}</h1>
-			<a class="mui-icon mui-pull-right"></a>
+
+			<template v-if="inventoryRightIcon">
+				<a class="mui-icon mui-icon-camera mui-pull-right" @click.stop.prevent="scanCode"></a>
+			</template>
+			<template v-else>
+				<a class="mui-icon mui-pull-right"></a>	
+			</template>
 		</header>
 		<div class="pages" :class="{'mui-content': $store.state.appData.isShowHead, 'toolbar-fixed': $store.state.appData.isShowFoot}">
-			<transition :name="$store.state.routerStatus.transition">
+			<!-- <transition :name="$store.state.routerStatus.transition"> -->
 				<!-- 包裹动态组件时，会缓存不活动的组件实例，而不是销毁它们 -->
 				<keep-alive v-if="$route.meta.keepAlive">
 					<router-view class="page"></router-view>
 				</keep-alive>
                 <router-view v-if="! $route.meta.keepAlive" class="page"></router-view>
-			</transition>
+			<!-- </transition> -->
 		</div>
 		<!--<footer class="mui-bar mui-bar-tab">
 			<router-link class="mui-tab-item mui-active" :to="{name: 'home'}" exact>
@@ -66,7 +72,6 @@
 	import appRouters from "../js/components/app-routers"
 	import myLoading from '../components/loading.vue'
 	import {mapGetters} from "vuex"
-	var ws = null;
 	export default {
 		data: function() {
 			return {};
@@ -84,10 +89,10 @@
 			this.initApp();
 			setTimeout(function(arg){
 				this.$store.dispatch("setLoadingState", arg);
-			}.bind(this), 1000, false);
+			}.bind(this), 600, false);
 		},
 		computed: {
-			...mapGetters(['loadingState', 'loginState']),
+			...mapGetters(['loadingState', 'loginState', 'enterPage', 'inventoryRightIcon']),
 		},
 		watch:{
 			loginState: function(val, oldVal){
@@ -104,39 +109,78 @@
 				// app.mui.toast(JSON.stringify(siteInfo));
 				var _this = this;
 				var isLogin = app.globalService.isLogin();
-				if(isLogin){
-				   	this.$store.dispatch("setLoginState", true);
-				} else{
+				if(!isLogin){
 					this.$router.push({name: "login"});
+				} else{
+					this.$store.dispatch("setLoginState", true);
 				}
-				if(app.Config.isApp){
-					ws=plus.webview.currentWebview();
-					ws.setStyle({scrollIndicator:'none'});
 
-					app.mui.back = function(){
+				if(app.Config.isApp || app.mui.os.plus){
+					app.mui.back = function(){ //important! remove embeded back button callback
 						return false;
 					}
-
+					let ws=plus.webview.currentWebview();
+					ws.setStyle({scrollIndicator:'none'});
 					plus.key.addEventListener('backbutton',function(event){
+						// app.mui.toast(location.hash);
 			            if(location.hash=="#/" || location.hash=="#/users/login"){
 			            	ws && ws.close();
-			            }
-			            else{
+			            } else{
 			             	try{
 			             		const elem = _this.$refs.myBtn
 			             		if(elem){
 			             			elem.click();
 			             		} else{
-			             			app.mui.toast("no exist");
+			             			app.mui.toast("the back buttun emlemnt does not exist");
 			             		}
 			             	} catch(e){
 			             		app.mui.toast("throw error-" + e.message);
 			             	}
-			             	
 			            }
 			            return false;
 			        }, false);
+
+				    plus.push.addEventListener( "click", function( msg ) {
+				        // 判断是从本地创建还是离线推送的消息
+				        switch( msg.payload ) {
+				            case "LocalMSG":
+				                // app.mui.toast( "点击本地创建消息启动：" );
+				                console.log( "点击本地创建消息启动：" );
+				            break;
+				            default:
+				                // app.mui.toast( "点击离线推送消息启动：");
+				                console.log( "点击离线推送消息启动：");
+				            break;
+				        }
+				        // plus.ui.alert( msg.content );
+				        if(isLogin){
+				        	_this.$router.push({name: "myMessageList"});
+				        } else{
+				        	_this.$router.push({name: "login"});
+				        }
+				    }, false );
+					// 监听在线消息事件
+					plus.push.addEventListener( "receive", function( msg ) {
+					    if ( msg.aps ) {  // Apple APNS message
+				            // app.mui.toast( "接收到在线APNS消息：" );
+				            console.log( "接收到在线APNS消息：" );
+				        } else {
+				            // app.mui.toast( "接收到在线透传消息：" );
+				            console.log( "接收到在线透传消息：" );
+				        }
+				        if(msg){
+				        	app.mui.toast(`输出message:'${JSON.stringify(msg)}'`);
+				        	console.log(`输出message>>>>>>>>>>>>>>${JSON.stringify(msg)}`);
+				        	// app.utils.createLocalPushMsg(1);
+			        		// plus.push.createMessage("欢迎使用HTML5+创建本地消息！", "LocalMSG", {cover:false} );
+				        }
+				        _this.$store.dispatch("updateEnterPage", "myMessageList");
+				        _this.$router.push({name: "myMessageList"});
+				        
+					}, false );
 				}
+
+			
 				
 				//1.检查更新
 				if(app.Config.isApp) {
@@ -199,7 +243,21 @@
 					_goBack();
 				}
 				return true;
-			}
+			},
+
+			scanCode: function(){
+	        	if(!app.Config.isApp){
+	        		app.mui.toast(this.$t("message.scanEnvError"));
+	        		return;
+	        	}
+	        	this.$store.dispatch("bindBarcodeOnmarkedEvent", this.scanResult);
+	        	this.$router.push({name: "barcode"});
+	        },
+
+	        scanResult(type, result){
+	    		console.log("扫码结果", result);
+	    		this.$router.push({name: "myScanResult", params: {"scan-result": result}});
+	        },
 		},
 	};
 </script>

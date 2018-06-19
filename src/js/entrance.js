@@ -64,6 +64,9 @@ mui.init({
 	},
 	statusBarBackground: "#1981D8" //设置状态栏颜色,仅iOS可用
 });
+
+// store.dispatch("updateEnterPage", "myMessageList");
+
 if(mui.os.plus) {
 	app.Config.isApp = true;
 	/*	if(plus.fingerprint) {
@@ -74,6 +77,9 @@ if(mui.os.plus) {
 		console.log("指纹模块缺失，请更新版本");
 	}*/
 	mui.plusReady(function(){
+		console.log("终端识别号" + plus.push.getClientInfo().clientid);
+		console.log("终端token" + plus.push.getClientInfo().token);
+
 		Object.assign(app.Config.device, {
 			isAndroid : plus.os.name === "Android", //是否在安卓环境内
 			isIOS : plus.os.name === "iOS", //是否在IOS环境内
@@ -85,30 +91,14 @@ if(mui.os.plus) {
 //			resolutionWidth: plus.screen.resolutionWidtht * plus.screen.scale, //设备屏幕宽度分辨率，目前好像是空的
 //			scale: plus.screen.scale, //逻辑分辨率与实际分辨率的比例
 			version: plus.os.version, //系统版本信息
-			osName: plus.os.name //系统的名称
+			osName: plus.os.name, //系统的名称
+			pushClientId: plus.push.getClientInfo().clientid,
+			pushToken: plus.push.getClientInfo().token,
 		});
 		app.Config.version = plus.runtime.version;
 		app.Config.clientVersion = plus.runtime.innerVersion;
 		initVue();
-
-/*		mui.back = function(){
-			console.log("返回键在entrance被点击：" + location.hash);
-			mui.toast("返回键在entrance被点击：" + location.hash);
-			if(location.hash=="#/" || location.hash=="#/users/login"){
-            	mui.toast(11);
-            	ws && ws.close();
-            } else{
-            	try{
-            		mui.toast(22);
-	            	window.app.vueApp.router.push({name: 'home'});
-            	} catch(e){
-            		mui.toast("erro throwed");
-            	}
-            	
-            }
-		};
-		plus.key.addEventListener('backbutton', mui.back, false);
-*/	});
+	});
 } else {
 	mui.ready(function() {
 		initVue();
