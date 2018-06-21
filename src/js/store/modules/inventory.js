@@ -7,19 +7,23 @@ const state = {
 	inventoryLastIndex: null,
 	inventoryScanned: null,
 	inventoryShowRightIcon: null,
+	queryOption: null,
+	needLoadMore: true,
 }
 
 const actions = {
 	getInventoryList({commit, state}, pull){
-		if(state.inventoryList.length != 0){
+		if(state.inventoryList.length != 0 && state.needLoadMore){
 			commit("set_inventory_range");
 		}
 
+		var mData = Object.assign({
+			"from": state.inventoryRange.from.toString(), 
+			"to": (state.inventoryRange.from + state.inventoryRange.limit).toString()
+		}, state.queryOption);
+
 		var param = {
-			data:{
-				"from": state.inventoryRange.from.toString(), 
-				"to": (state.inventoryRange.from + state.inventoryRange.limit).toString()
-			},
+			data: mData,
 			success:function(ret){
 				for(let obj of ret.data){
 					if(obj.photo){
@@ -32,6 +36,7 @@ const actions = {
 					}
 				}
 				commit("concat_inventory_list", ret.data);
+				// commit("set_load_more_flag", ret.data.length > 0 ? true : false);
 			},
 			failed:function(msg){
 				app.mui.toast(msg);
@@ -42,7 +47,7 @@ const actions = {
 			},
 			complete:function(){
 				commit("com_loading_status", false);
-				pull.endPullupToRefresh();
+				pull && pull.endPullupToRefresh();
 			}
 		};
 
@@ -50,11 +55,13 @@ const actions = {
 	},
 
 	updateInventoryList({commit, state}, pull){
+		var mData = Object.assign({
+			"from": "0", 
+			"to": state.inventoryRange.limit.toString()
+		}, state.queryOption);
+
 		var param = {
-			data:{
-				"from": "0", 
-				"to": state.inventoryRange.limit.toString()
-			},
+			data: mData,
 			success:function(ret){
 				var temp = ret.data.filter(function(itm, pos){
 	    			for (var i = 0; i < state.inventoryList.length; i++) {
@@ -77,7 +84,7 @@ const actions = {
 			},
 			complete:function(){
 				commit("com_loading_status", false);
-				pull.endPulldownToRefresh();
+				pull && pull.endPulldownToRefresh();
 			}
 		};
 
@@ -148,6 +155,19 @@ const actions = {
 	updateInventoryRightIconState({commit, state}, status){
 		commit("set_inventory_righticon", status);
 	},
+
+	resetInventoryRange({commit, state}){
+		commit("reset_inventory_range");
+	},
+
+	setQueryOption({commit, state}, option){
+		commit("set_query_option", option);
+	},
+
+	setInventoryList({commit, state}, data){
+		commit("set_inventory_list", data);
+	},
+
 }
 
 const getters = {
@@ -167,6 +187,12 @@ const mutations = {
 	set_inventory_range(state){
 		state.inventoryRange.from += state.inventoryRange.limit;
 	},
+	reset_inventory_range(state){
+		state.inventoryRange = {
+			from: 0,
+			limit: 10
+		};
+	},
 	set_inventory_last_index(state, last){
 		state.inventoryLastIndex = last;
 	},
@@ -175,6 +201,12 @@ const mutations = {
 	},
 	set_inventory_righticon(state, data){
 		state.inventoryShowRightIcon = data;
+	},
+	set_query_option(state, option){
+		state.queryOption = option;
+	},
+	set_load_more_flag(state, flag){
+		state.needLoadMore = flag;
 	},
 	getImgUrl(state, obj){
 		app.mui.plusReady(function(){

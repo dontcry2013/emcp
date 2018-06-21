@@ -57,6 +57,7 @@ export default {
 		return {
 			image:image,
 			subMenuState: false,
+			pullRefreshInstance: null,
 		};
 	},
 	components:{
@@ -70,30 +71,33 @@ export default {
 		var _this = this;
 		this.$store.dispatch("updateNavbarTitle", this.$t('home.inventory'));
 		this.$store.dispatch("updateInventoryRightIconState", true);
-		this.$store.dispatch("getInventorySubMenu");
+		if(!this.inventorySubMenu){
+			this.$store.dispatch("getInventorySubMenu");
+		}
 		app.mui.ready(function(){
 			app.mui('#offCanvasSideScroll').scroll();
-			app.mui("#id-my-inventory-list").pullRefresh({
+			_this.pullRefreshInstance = app.mui("#id-my-inventory-list").pullRefresh({
 				down : {
-					"height": 100, //可选.默认50.触发上拉加载拖动距离
+					"height": 100,
 					"range":'200px',
 			      	callback : function(){
-			      		var self = this;
-			        	_this.tabDown(self);
+			      		console.log(_this.pullRefreshInstance);
+			        	_this.tabDown(this);
 			      	}
 			    },
               	up: {
-	                height: 100, //可选.默认50.触发上拉加载拖动距离
-	                auto: _this.inventoryList && _this.inventoryList.length>0 ? false : true, //可选,默认false.自动上拉加载一次
+	                height: 500,
+	                auto: _this.inventoryList && _this.inventoryList.length>0 ? false : true,
 	                contentnomore: '已到底了', //可选，请求完毕若没有更多数据时显示的提醒内容；
 	                callback: function () {
-	                  	var self = this
-	                  	_this.tabUp(self);
+	                  	_this.tabUp(this);
 	                }
 	            }
 			});
 		});
-		app.bus.$on('MyTapEvent', msg=>this.handleTreeviewTapEvent(msg));
+		app.bus.$on('MyTapEvent', function(msg){
+			this.handleTreeviewTapEvent(msg)
+		}.bind(_this));
 	},
 	computed: {
 		...mapGetters(['inventoryList', 'inventorySubMenu']),
@@ -115,10 +119,8 @@ export default {
 		},
 
 		gotoDetails(idx){
-			// if(typeof idx === "number"){
-				this.$store.dispatch('updateInventoryLastIndex', idx)
-				this.$router.push({name: "myInventoryDetail", params: { content: this.inventoryList[idx] }});
-			// }
+			this.$store.dispatch('updateInventoryLastIndex', idx);
+			this.$router.push({name: "myInventoryDetail", params: { content: this.inventoryList[idx] }});
 		}, 
 
 		popUp(){
@@ -133,7 +135,18 @@ export default {
     	handleTreeviewTapEvent(msg){
     		if(msg){
     			console.log("treeview输出", msg);
-    			this.$store.dispatch("getSubInventoryList", msg);
+    			// this.$store.dispatch("getSubInventoryList", msg);
+    			this.$store.dispatch("setInventoryList", []);
+    			this.$store.dispatch("resetInventoryRange");
+    			this.$store.dispatch("setQueryOption", {"tfiSubject": msg});
+    			this.$store.dispatch("updateInventoryList");
+    			// this.pullRefreshInstance.disablePullupToRefresh();
+    		} 
+    		if(msg == 'root'){
+    			this.$store.dispatch("setInventoryList", []);
+    			this.$store.dispatch("resetInventoryRange");
+    			this.$store.dispatch("setQueryOption", {});
+    			this.$store.dispatch("updateInventoryList");	
     		}
     	},
 
