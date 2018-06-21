@@ -248,4 +248,32 @@ export default {
 			console.log('*如果无法创建消息，请到"设置"->"通知"中配置应用在通知中心显示!' + arg);
 		}
 	},
+	download_img: function(image_url, local_image_url, cb){
+    	console.log("启动下载" + image_url);
+        // filename:下载任务在本地保存的文件路径
+        let download_task = plus.downloader.createDownload(image_url, {filename: local_image_url}, function(download, status) {
+            // 下载失败,删除本地临时文件
+            if(status != 200){
+                console.log('下载失败,status'+status);
+                if(local_image_url != null){
+                    plus.io.resolveLocalFileSystemURL(local_image_url, function(entry) {
+                        entry.remove(function(entry) {
+                            console.log("临时文件删除成功" + local_image_url);
+                            // 重新下载图片
+                            // download_img();
+                        }, function(e) {
+                            console.log("临时文件删除失败" + local_image_url);
+                        });
+                    });
+                }
+            } else{
+                // 把下载成功的图片显示
+                // 将本地URL路径转换成平台绝对路径
+                console.log("下载成功" + local_image_url);
+                var photo = plus.io.convertLocalFileSystemURL(local_image_url);
+                cb(photo)
+            }
+        });
+        download_task.start();
+    }
 }

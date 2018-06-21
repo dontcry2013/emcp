@@ -3,6 +3,7 @@
     <li>
       <div
         :class="{ parent_style: isFolder, child_style: !isFolder}"
+        :model-id="model.id"
         @tap="toggle"
         @dblclick="changeType">
         <span :class="clsParentOrChild"></span>
@@ -56,6 +57,7 @@
         if (this.isFolder) {
           this.open = !this.open
         }
+        app.bus.$emit("MyTapEvent", e.target.getAttribute("model-id"));
         app.mui.toast(e.target.innerText);
       },
       changeType: function () {

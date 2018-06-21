@@ -23,6 +23,7 @@ import debounce from 'lodash.debounce'
 
 console.log("webpack的配置", JSON.stringify(config));
 Object.assign(app.Config, config);
+app.bus = new Vue();
 window.app = Object.assign({}, app, {log, utils, mui, globalService, api});
 //signalR是基于jquery的，所以必须要把jQuery引进来，Jquery仅仅是用于signalR。太恶心了，其实我TM的真的不想这样...
 window.jQuery = window.$ = jQuery;
@@ -79,6 +80,11 @@ if(mui.os.plus) {
 	mui.plusReady(function(){
 		console.log("终端识别号" + plus.push.getClientInfo().clientid);
 		console.log("终端token" + plus.push.getClientInfo().token);
+
+
+        plus.io.requestFileSystem(plus.io.PRIVATE_WWW, (fs)=>{
+        	console.log("获取目录：" + fs.root.fullPath);
+        }, ()=>console.log("获取目录失败"));
 
 		Object.assign(app.Config.device, {
 			isAndroid : plus.os.name === "Android", //是否在安卓环境内

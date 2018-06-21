@@ -1,44 +1,45 @@
 <template>
 	<div data-page="my-inventory-detail">
 		<div class="page-content">
-	<!-- 		<div class="contents">
-				小时候，总以为感情会是一场执子之手，白头偕老的约定。长大了，才知道每一段旅行的同路人，都只能走一小段，也只有多年之后回头，相视一笑，点点头
-			</div>
-			<div class="ending">
-				2017-02-23 16:20
-			</div> -->
+			<div class="imgholder" v-if="myContent&&myContent.photo" v-bind:style="{ 'background-image': 'url(' + myContent.photo + ')' }"></div>
+			<div class="contents" v-if="myContent">
+				<h2>{{ myContent.tfiName }}</h2>
 
-			<div class="imgholder" v-if="myContent!=undefined">
-				<img v-if="myContent.photo" :src="myContent.photo">
-			</div>
-			<div class="contents" v-if="myContent!=undefined">
-				<p class="mui-ellipsis">
-					<span>item name:</span> {{ myContent.tfiName }}
-				</p>
-				<p class="mui-ellipsis">
-					<span>item number:</span> {{ myContent.tfiNo }}
-				</p>
-				<p class="mui-ellipsis">
-					<span>item type:</span> {{ myContent.tfiType }}
-				</p>
-				<p class="mui-ellipsis">
-					<span>item unit:</span> {{ myContent.tfiUnit }}
-				</p>
-				<p class="mui-ellipsis">
-					<span>item available:</span> {{ myContent.tfiMountAble }}
-				</p>
-				<p class="mui-ellipsis">
-					<span>item price:</span> {{ myContent.tfiFigure }}
-				</p>
-				<p class="mui-ellipsis">
-					<span>store name:</span> {{ myContent.tFStore.tfsStoreshortname }}
-				</p>
-				<p class="mui-ellipsis">
-					<span>creator email:</span> {{ myContent.createBy }}
-				</p>
+				<table>
+					<tr>
+						<td class="card-title">item number:</td>
+						<td class="card-subtitle">{{ myContent.tfiNo }}</td>
+					</tr>
+					<tr>
+						<td class="card-title">item type:</td>
+						<td class="card-subtitle">{{ myContent.tfiType }}</td>
+					</tr>
+					<tr>
+						<td class="card-title">item unit:</td>
+						<td class="card-subtitle">{{ myContent.tfiUnit }}</td>
+					</tr>
+					<tr>
+						<td class="card-title">item available:</td>
+						<td class="card-subtitle">{{ myContent.tfiMountAble }}</td>
+					</tr>
+					<tr>
+						<td class="card-title">item price:</td>
+						<td class="card-subtitle">{{ myContent.tfiFigure }}</td>
+					</tr>
+					<tr>
+						<td class="card-title">store name:</td>
+						<td class="card-subtitle">{{ myContent.tFStore.tfsStoreshortname }}</td>
+					</tr>
+					<tr>
+						<td class="card-title">creator email:</td>
+						<td class="card-subtitle">{{ myContent.createBy }}</td>
+					</tr>
+				</table>
 			</div>
 			<div class="ending" v-if="myContent!=undefined">
-				<div><span>created by:</span> {{ myContent.createName }}</div>
+				<div>
+					<span>created by:</span> {{ myContent.createName }}
+				</div>
 				{{ myContent.createDate }}
 			</div>
 			
@@ -89,9 +90,23 @@ export default {
 <style lang="less" scoped>
 	[data-page='my-inventory-detail'] {
 		.imgholder {
-			img {
-				width: 100%
-			}
+			margin: 0 auto;
+		    background-position: center center;
+		    background-size: cover;
+		    background-repeat: no-repeat;
+		    width: 100%;
+		    height: 300px;
+		}
+		table {
+		    font-family: arial, sans-serif;
+		    border-collapse: collapse;
+		    width: 100%;
+		}
+		.card-title{
+			color: #999;
+		}
+		.card-subtitle{
+			color: #333;
 		}
 		.contents {    
 			overflow-x: hidden;
@@ -102,7 +117,7 @@ export default {
 			font-size: 10px;
 			color: gray;
 		    text-align: right;
-		    padding: 44px;
+		    padding: 0 44px 65px;
 		}
 
 		footer {

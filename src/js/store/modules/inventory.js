@@ -26,8 +26,12 @@ const actions = {
 						obj.photo = app.Config.webapiDomain + obj.photo;
 						commit('getImgUrl', obj);
 					}
+					if(obj.photoThumb){
+						obj.photoThumb = app.Config.webapiDomain + obj.photoThumb;
+						commit('getThumbImgUrl', obj);
+					}
 				}
-				commit("set_inventory_list", ret.data);
+				commit("concat_inventory_list", ret.data);
 			},
 			failed:function(msg){
 				app.mui.toast(msg);
@@ -61,7 +65,7 @@ const actions = {
 					return true;
 	    		});
 	    		if(temp.length > 0){
-	    			commit("set_inventory_list", temp.concat(state.inventoryList));
+	    			commit("concat_inventory_list", temp.concat(state.inventoryList));
 	    		}
 			},
 			failed:function(msg){
@@ -74,6 +78,32 @@ const actions = {
 			complete:function(){
 				commit("com_loading_status", false);
 				pull.endPulldownToRefresh();
+			}
+		};
+
+		app.utils.fetch(app.Config.webapiDomain + "rest/tFInventoryController/", param)
+	},
+
+	getSubInventoryList({commit, state}, subjectId){
+		var param = {
+			data:{
+				"from": "0", 
+				"to": "1000",
+				"tfiSubject": subjectId,
+			},
+			success:function(ret){
+				console.log("dfsdfjskdfjslkdfjsldkfjsdl;fjsdfk;jsl");
+				commit("set_inventory_list", ret.data);
+			},
+			failed:function(msg){
+				app.mui.toast(msg);
+				commit("com_login_status", false);
+			},
+			error:function(msg){
+				app.mui.toast(msg);
+			},
+			complete:function(){
+				commit("com_loading_status", false);
 			}
 		};
 
@@ -129,6 +159,9 @@ const getters = {
 
 const mutations = {
 	set_inventory_list(state, data){
+		state.inventoryList = data;
+	},
+	concat_inventory_list(state, data){
 		state.inventoryList = state.inventoryList.concat(data);
 	},
 	set_inventory_range(state){
@@ -153,38 +186,30 @@ const mutations = {
 	                console.log("photo是" + obj.photo);
 	            }else{
 	            	download_img(obj.photo, local_image_url);
+	            	app.utils.download_img(obj.photo, local_image_url, local_photo_str=>obj.photo = local_photo_str);
 	            }
 	        }, function (error) {
 	            console.log(JSON.stringify(error));
-	            download_img(obj.photo, local_image_url);
+	            app.utils.download_img(obj.photo, local_image_url, local_photo_str=>obj.photo = local_photo_str);
 	        });
-        	function download_img(image_url, local_image_url){
-            	console.log("启动下载" + image_url);
-                // filename:下载任务在本地保存的文件路径
-                let download_task = plus.downloader.createDownload(image_url, {filename: local_image_url}, function(download, status) {
-                    // 下载失败,删除本地临时文件
-                    if(status != 200){
-                        console.log('下载失败,status'+status);
-                        if(local_image_url != null){
-                            plus.io.resolveLocalFileSystemURL(local_image_url, function(entry) {
-                                entry.remove(function(entry) {
-                                    console.log("临时文件删除成功" + local_image_url);
-                                    // 重新下载图片
-                                    // download_img();
-                                }, function(e) {
-                                    console.log("临时文件删除失败" + local_image_url);
-                                });
-                            });
-                        }
-                    } else{
-                        // 把下载成功的图片显示
-                        // 将本地URL路径转换成平台绝对路径
-                        console.log("下载成功" + local_image_url);
-                        obj.photo = plus.io.convertLocalFileSystemURL(local_image_url);
-                    }
-                });
-                download_task.start();
-            }
+        });
+	},
+	getThumbImgUrl(state, obj){
+		app.mui.plusReady(function(){
+        	// 判断本地是否存在该文件，存在就就直接使用，否则就下载
+        	let local_thumb_image_url = '_downloads/image/thumb_' + obj.id + '.jpg';
+        	plus.io.resolveLocalFileSystemURL(local_thumb_image_url, function( entry ) {
+	            if(entry){
+	                obj.photoThumb = plus.io.convertLocalFileSystemURL(local_thumb_image_url);
+	                console.log("photoThumb是" + obj.photoThumb);
+	            }else{
+	            	download_img(obj.photoThumb, local_thumb_image_url);
+	            	app.utils.download_img(obj.photoThumb, local_thumb_image_url, local_photo_str=>obj.photoThumb = local_photo_str);
+	            }
+	        }, function (error) {
+	            console.log(JSON.stringify(error));
+	            app.utils.download_img(obj.photoThumb, local_thumb_image_url, local_photo_str=>obj.photoThumb = local_photo_str);
+	        });
         });
 	},
 }

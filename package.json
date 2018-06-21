@@ -1,21 +1,13 @@
 {
-  "name": "Fans",
-  "version": "1.0.0",
+  "name": "EMCP",
+  "version": "0.0.5",
   "main": "js/entrance.js",
   "homepage": "",
-  "bugs": {
-    "url": "https://github.com/yujinjin/fans/issues",
-    "email": "yujinjin9@126.com"
-  },
   "author": {
     "name": "zac",
     "email": "zach.qin@gmail.com"
   },
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yujinjin/fans.git"
-  },
   "scripts": {
     "R_DEV": "set NODE_RUN=1&&webpack-dev-server --progress --watch --inline --host=localhost  --port 8083",
     "MR_DEV": "export NODE_RUN=1&&webpack-dev-server --progress --watch --inline --host=localhost  --port 8083",

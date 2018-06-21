@@ -4,11 +4,13 @@
 		<header class="mui-bar mui-bar-nav" v-show="$store.state.appData.isShowHead">
 			<!--<h1 class="mui-title">{{$store.state.appData.navbarTitle}}</h1>
 			<button id='setting' class=" mui-pull-right mui-btn-link">设置</button>-->
+
 			<a class="mui-icon mui-icon-left-nav mui-pull-left" @click.stop.prevent="goBack" v-show="$store.state.appData.isShowBack" ref="myBtn"></a>
+
 			<h1 class="mui-title">{{$store.state.appData.navbarTitle}}</h1>
 
 			<template v-if="inventoryRightIcon">
-				<a class="mui-icon mui-icon-camera mui-pull-right" @click.stop.prevent="scanCode"></a>
+				<a class="mui-icon mui-action-menu mui-icon-bars mui-pull-right" href="#offCanvasSide"></a>
 			</template>
 			<template v-else>
 				<a class="mui-icon mui-pull-right"></a>	
@@ -244,20 +246,6 @@
 				}
 				return true;
 			},
-
-			scanCode: function(){
-	        	if(!app.Config.isApp){
-	        		app.mui.toast(this.$t("message.scanEnvError"));
-	        		return;
-	        	}
-	        	this.$store.dispatch("bindBarcodeOnmarkedEvent", this.scanResult);
-	        	this.$router.push({name: "barcode"});
-	        },
-
-	        scanResult(type, result){
-	    		console.log("扫码结果", result);
-	    		this.$router.push({name: "myScanResult", params: {"scan-result": result}});
-	        },
 		},
 	};
 </script>
