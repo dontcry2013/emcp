@@ -3,24 +3,24 @@
     <li>
       <div
         :class="{ parent_style: isFolder, child_style: !isFolder}"
-        :model-id="model.id"
-        @tap="toggle"
+        :model-id="model.id?model.id:'root'"
+        
         @dblclick="changeType">
         <span :class="clsParentOrChild"></span>
-        {{ model.name }}
-        <span v-if="isFolder" :class="clsObj"></span>
+        <span @tap="sendmsg">{{ model.name }}</span>
+        <span @tap="toggle" v-if="isFolder" :class="clsObj"></span>
       </div>
-    <ul v-show="open" v-if="isFolder">
-      <treeview
-        class="item"
-        v-for="(model, index) in model.children"
-        :key="index"
-        :model="model">
-      </treeview>
-    <!-- <li class="add" @click="addChild">+</li> -->
-    </ul>
-  </li>
-</ul>
+      <ul v-show="open" v-if="isFolder">
+        <treeview
+          class="item"
+          v-for="(model, index) in model.children"
+          :key="index"
+          :model="model">
+        </treeview>
+      <!-- <li class="add" @click="addChild">+</li> -->
+      </ul>
+    </li>
+  </ul>
 </template>
 <script>
   module.exports = {
@@ -57,7 +57,13 @@
         if (this.isFolder) {
           this.open = !this.open
         }
-        app.bus.$emit("MyTapEvent", e.target.getAttribute("model-id"));
+      },
+      sendmsg: function(e){
+        var msg = {
+          id: e.target.parentElement.getAttribute("model-id"),
+          text: e.target.innerText,
+        }
+        app.bus.$emit("MyTapEvent", msg);
         app.mui.toast(e.target.innerText);
       },
       changeType: function () {

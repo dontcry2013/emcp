@@ -10,7 +10,7 @@
 							<p style="margin: 10px 5px;">
 								<!-- <button id="offCanvasHide" type="button" class="mui-btn mui-btn-danger mui-btn-block" style="padding: 5px 20px;">关闭侧滑菜单</button> -->
 							  	<template v-if="inventorySubMenu">
-								  	<treeView class="item" :model="inventorySubMenu" @MyTapEvent="handleTreeviewTapEvent">
+								  	<treeView class="item" :model="inventorySubMenu" :isOpen="true" @MyTapEvent="handleTreeviewTapEvent">
 								  	</treeView>
 								</template>
 								<template v-else>
@@ -69,7 +69,7 @@ export default {
 	},
 	mounted(){
 		var _this = this;
-		this.$store.dispatch("updateNavbarTitle", this.$t('home.inventory'));
+		this.$store.dispatch("updateNavbarTitle", this.inventoryTitle ? this.inventoryTitle : this.$t('home.inventory'));
 		this.$store.dispatch("updateInventoryRightIconState", true);
 		if(!this.inventorySubMenu){
 			this.$store.dispatch("getInventorySubMenu");
@@ -81,7 +81,6 @@ export default {
 					"height": 100,
 					"range":'200px',
 			      	callback : function(){
-			      		console.log(_this.pullRefreshInstance);
 			        	_this.tabDown(this);
 			      	}
 			    },
@@ -100,7 +99,7 @@ export default {
 		}.bind(_this));
 	},
 	computed: {
-		...mapGetters(['inventoryList', 'inventorySubMenu']),
+		...mapGetters(['inventoryList', 'inventorySubMenu', 'inventoryTitle']),
 	},
     beforeRouteEnter: function(to, from, next) {
 		next();
@@ -111,11 +110,11 @@ export default {
 	},
 	methods: {
 		tabDown:function(self){
-	        this.$store.dispatch('updateInventoryList', self);
+	        this.$store.dispatch('pullDownLoad', self);
 		},
 
 		tabUp:function(self){
-	        this.$store.dispatch('getInventoryList', self);
+	        this.$store.dispatch('pullUpLoadMore', self);
 		},
 
 		gotoDetails(idx){
@@ -135,19 +134,14 @@ export default {
     	handleTreeviewTapEvent(msg){
     		if(msg){
     			console.log("treeview输出", msg);
-    			// this.$store.dispatch("getSubInventoryList", msg);
     			this.$store.dispatch("setInventoryList", []);
     			this.$store.dispatch("resetInventoryRange");
-    			this.$store.dispatch("setQueryOption", {"tfiSubject": msg});
-    			this.$store.dispatch("updateInventoryList");
+    			this.$store.dispatch("setQueryOption", (msg.id == 'root') ? {} : {"tfiSubject": msg.id});
+    			this.$store.dispatch("pullDownLoad");
+    			this.$store.dispatch("updateNavbarTitle", msg.text);
+    			this.$store.dispatch("setTitle", msg.text);
     			// this.pullRefreshInstance.disablePullupToRefresh();
-    		} 
-    		if(msg == 'root'){
-    			this.$store.dispatch("setInventoryList", []);
-    			this.$store.dispatch("resetInventoryRange");
-    			this.$store.dispatch("setQueryOption", {});
-    			this.$store.dispatch("updateInventoryList");	
-    		}
+    		} 	
     	},
 
 		scanCode: function(){

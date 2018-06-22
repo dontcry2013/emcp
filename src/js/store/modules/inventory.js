@@ -9,10 +9,11 @@ const state = {
 	inventoryShowRightIcon: null,
 	queryOption: null,
 	needLoadMore: true,
+	title: null,
 }
 
 const actions = {
-	getInventoryList({commit, state}, pull){
+	pullUpLoadMore({commit, state}, pull){
 		if(state.inventoryList.length != 0 && state.needLoadMore){
 			commit("set_inventory_range");
 		}
@@ -25,7 +26,7 @@ const actions = {
 		var param = {
 			data: mData,
 			success:function(ret){
-				for(let obj of ret.data){
+				var mapedData = ret.data.map((obj)=>{
 					if(obj.photo){
 						obj.photo = app.Config.webapiDomain + obj.photo;
 						commit('getImgUrl', obj);
@@ -34,8 +35,9 @@ const actions = {
 						obj.photoThumb = app.Config.webapiDomain + obj.photoThumb;
 						commit('getThumbImgUrl', obj);
 					}
-				}
-				commit("concat_inventory_list", ret.data);
+					return obj;
+				})
+				commit("concat_inventory_list", mapedData);
 				// commit("set_load_more_flag", ret.data.length > 0 ? true : false);
 			},
 			failed:function(msg){
@@ -54,7 +56,7 @@ const actions = {
 		app.utils.fetch(app.Config.webapiDomain + "rest/tFInventoryController/", param)
 	},
 
-	updateInventoryList({commit, state}, pull){
+	pullDownLoad({commit, state}, pull){
 		var mData = Object.assign({
 			"from": "0", 
 			"to": state.inventoryRange.limit.toString()
@@ -63,7 +65,18 @@ const actions = {
 		var param = {
 			data: mData,
 			success:function(ret){
-				var temp = ret.data.filter(function(itm, pos){
+				var mapedData = ret.data.map((obj)=>{
+					if(obj.photo){
+						obj.photo = app.Config.webapiDomain + obj.photo;
+						commit('getImgUrl', obj);
+					}
+					if(obj.photoThumb){
+						obj.photoThumb = app.Config.webapiDomain + obj.photoThumb;
+						commit('getThumbImgUrl', obj);
+					}
+					return obj;
+				});
+				var temp = mapedData.filter(function(itm, pos){
 	    			for (var i = 0; i < state.inventoryList.length; i++) {
 						if(state.inventoryList[i].id == itm.id){
 							return false;
@@ -168,6 +181,10 @@ const actions = {
 		commit("set_inventory_list", data);
 	},
 
+	setTitle({commit, state}, title){
+		commit("set_title", title);
+	},
+
 }
 
 const getters = {
@@ -175,6 +192,7 @@ const getters = {
 	inventoryLastIndex: state => state.inventoryLastIndex,
 	inventoryScanned: state => state.inventoryScanned,
 	inventoryRightIcon: state => state.inventoryShowRightIcon,
+	inventoryTitle: state => state.title,
 }
 
 const mutations = {
@@ -207,6 +225,9 @@ const mutations = {
 	},
 	set_load_more_flag(state, flag){
 		state.needLoadMore = flag;
+	},
+	set_title(state, title){
+		state.title = title;
 	},
 	getImgUrl(state, obj){
 		app.mui.plusReady(function(){
