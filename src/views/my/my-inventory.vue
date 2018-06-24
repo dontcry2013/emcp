@@ -140,6 +140,7 @@ export default {
     			this.$store.dispatch("pullDownLoad");
     			this.$store.dispatch("updateNavbarTitle", msg.text);
     			this.$store.dispatch("setTitle", msg.text);
+    			app.mui('#id-my-inventory-list').scroll().scrollTo(0,0,100);
     			// this.pullRefreshInstance.disablePullupToRefresh();
     		} 	
     	},
