@@ -26,7 +26,7 @@ const messages = {
     home: {
       scanQr: "扫码核销",
       memberQr: "会员识别",
-      messageList: "消息通知",
+      messageList: "通知公告",
       employeeList: "员工列表",
       taskList: "任务列表",
       fileUpload: "文件上传",
@@ -46,6 +46,7 @@ const messages = {
       logout: "退出登录",
       langSwitch: "语言切换",
       changePsw: "密码修改",
+      notification: "消息",
     }
   },
 
@@ -93,6 +94,7 @@ const messages = {
       logout: "Log Out",
       langSwitch: "Change Language",
       changePsw: "Change Passphrase",
+      notification: "notification",
     }
   },
 }

@@ -26,7 +26,7 @@
 				<li class="mui-table-view-cell mui-media" @tap.stop.prevent="gotoMyMessageList">
 					<a class="mui-navigate-right item">
 						<span class="mui-icon mui-icon-email mui-media-object mui-pull-left item-icon message"></span>
-						<div class="item-content">{{ $t("home.messageList") }}</div>
+						<div class="item-content">{{ $t("user.notification") }}</div>
 						<span class="mui-badge mui-badge-danger">4</span>
 					</a>
 				</li>
